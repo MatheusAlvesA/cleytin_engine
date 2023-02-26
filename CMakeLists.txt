@@ -1,0 +1,18 @@
+idf_component_register(SRCS 
+                            "cleytin_engine.cpp"
+                            "cleytin_tftlcd_api.cpp"
+                            "cleytin_controls.cpp"
+                            "ce_rectangle.cpp"
+                            "ce_circle.cpp"
+                            "ce_bitmap.cpp"
+                            "ce_font.cpp"
+                            "ce_8x12_font.cpp"
+                            "ce_text.cpp"
+                            "ce_container.cpp"
+                            "ce_menu_helper.cpp"
+                            "ce_canvas.cpp"
+                            "ce_canvas_tftlcd_320x240.cpp"
+                            "cleytin_sdcard.cpp"
+                            "ce_colorful_bitmap.cpp"
+                    INCLUDE_DIRS "include"
+                    REQUIRES cleytin_commons)
