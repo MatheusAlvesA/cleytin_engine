@@ -105,6 +105,8 @@ public:
     virtual uint16_t getRotation();
     virtual size_t getRenderWindowHeight();
     virtual size_t getRenderWindowWidth();
+    virtual CEColor* getColorAt(int x, int y);
+    virtual CEColor* doGetColorAt(unsigned int x, unsigned int y) = 0;
 
 protected:
     bool visible;

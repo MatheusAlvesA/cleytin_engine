@@ -18,6 +18,7 @@ public:
 
     CERenderWindow* getRenderWindow();
     bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
+    CEColor* doGetColorAt(unsigned int x, unsigned int y);
 
 protected:
     unsigned int width;

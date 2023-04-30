@@ -95,3 +95,29 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     
     return allPixelRendered;
 }
+
+CEColor* CEBitmap::doGetColorAt(unsigned int x, unsigned int y) {
+    unsigned int posX = x / this->getSizeMultiplier();
+    if(x > this->getSizeMultiplier() && x % this->getSizeMultiplier()) {
+        posX++;
+    }
+
+    unsigned int posY = y / this->getSizeMultiplier();
+    if(y > this->getSizeMultiplier() && y % this->getSizeMultiplier()) {
+        posY++;
+    }
+
+    unsigned int bitPos = posX + (posY * this->width);
+    unsigned int bytePos = bitPos / 8;
+    unsigned int bitOffset = bitPos % 8;
+
+    if(this->buffer[bytePos] & (1 << (7 - bitOffset))) {
+        CEColor *color = new CEColor();
+        color->red = this->getBaseColor()->red;
+        color->green = this->getBaseColor()->green;
+        color->blue = this->getBaseColor()->blue;
+        return color;
+    }
+
+    return NULL;
+}
