@@ -63,6 +63,7 @@ public:
     void expand(unsigned int size);
 
     void rotate(uint16_t degrees);
+    void resetToStartPosition();
 
     bool operator==(const CERenderWindow &window);
 

@@ -416,6 +416,20 @@ void CERenderWindow::rotate(uint16_t degrees)
     delete center;
 }
 
+void CERenderWindow::resetToStartPosition()
+{
+    int offsetX = this->topLeft->x;
+    int offsetY = this->topLeft->y;
+    this->topLeft->x -= offsetX;
+    this->topLeft->y -= offsetY;
+    this->topRight->x -= offsetX;
+    this->topRight->y -= offsetY;
+    this->bottomLeft->x -= offsetX;
+    this->bottomLeft->y -= offsetY;
+    this->bottomRight->x -= offsetX;
+    this->bottomRight->y -= offsetY;
+}
+
 bool CERenderWindow::containsPoint(CEPoint *point)
 {
     CELine *topLine = this->getTopLine();
@@ -533,6 +547,7 @@ CEGraphicObject::CEGraphicObject()
     this->maxY = LCD_HEIGHT_PIXELS;
     this->baseColor = {0, 0, 0};
     this->alteredWindows = new std::vector<CERenderWindow *>();
+    this->addCurrentWindowAsAltered();
 }
 
 CEGraphicObject::~CEGraphicObject()
