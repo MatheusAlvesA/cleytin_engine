@@ -10,7 +10,8 @@
 
 #define PI 3.142857
 
-class CEPoint {
+class CEPoint
+{
 public:
     int x;
     int y;
@@ -19,12 +20,12 @@ public:
     bool operator==(const CEPoint &dot);
 
     void rotate(CEPoint *rotationCenter, uint16_t degrees);
-    CEPoint * clone();
+    CEPoint *clone();
     unsigned int distanceTo(const CEPoint point);
 };
 
-
-class CELine {
+class CELine
+{
 public:
     CELine(const CEPoint &start, const CEPoint &end);
     ~CELine();
@@ -34,7 +35,8 @@ public:
     int calculateSideOfPoint(CEPoint *point);
 };
 
-class CERenderWindow {
+class CERenderWindow
+{
 public:
     CERenderWindow(const CEPoint *start, const CEPoint *end);
     ~CERenderWindow();
@@ -47,32 +49,35 @@ public:
     void setMaxX(unsigned int x);
     void setMaxY(unsigned int y);
 
-    CEPoint* getCenterPoint();
-    CELine* getTopLine();
-    CELine* getBottomLine();
-    CELine* getLeftLine();
-    CELine* getRightLine();
+    CEPoint *getCenterPoint();
+    CELine *getTopLine();
+    CELine *getBottomLine();
+    CELine *getLeftLine();
+    CELine *getRightLine();
     size_t getHeight();
     size_t getWidth();
 
-    std::vector<CEPoint*>* getAllPoints();
+    std::vector<CEPoint *> *getAllPoints();
 
     bool containsPoint(CEPoint *point);
     void expand(unsigned int size);
 
     void rotate(uint16_t degrees);
 
+    bool operator==(const CERenderWindow &window);
+
 private:
     unsigned int maxX;
     unsigned int maxY;
 };
 
-class CEGraphicObject {
+class CEGraphicObject
+{
 public:
     CEGraphicObject();
     virtual ~CEGraphicObject();
-    virtual CERenderWindow* getDefaultRenderWindow();
-    virtual CERenderWindow* getRenderWindow() = 0;
+    virtual CERenderWindow *getDefaultRenderWindow();
+    virtual CERenderWindow *getRenderWindow() = 0;
     virtual bool renderToCanvas(CECanvas *canvas);
     virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *window) = 0;
     virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
@@ -105,8 +110,11 @@ public:
     virtual uint16_t getRotation();
     virtual size_t getRenderWindowHeight();
     virtual size_t getRenderWindowWidth();
-    virtual CEColor* getColorAt(int x, int y);
-    virtual CEColor* doGetColorAt(unsigned int x, unsigned int y) = 0;
+    virtual CEColor *getColorAt(int x, int y);
+    virtual CEColor *doGetColorAt(unsigned int x, unsigned int y) = 0;
+    virtual CERenderWindow *getContainingWindow();
+    virtual std::vector<CERenderWindow *> *getAlteredWindows();
+    virtual void clearAlteredWindows();
 
 protected:
     bool visible;
@@ -120,13 +128,16 @@ protected:
     unsigned int maxY;
     uint16_t rotation;
     CEColor baseColor;
+    std::vector<CERenderWindow *> *alteredWindows;
 
     bool setPixel(CECanvas *canvas, int x, int y, CEColor color);
     bool rotatePixel(int &x, int &y, uint16_t rot);
     void mirrorPixel(int &x);
+    void addCurrentWindowAsAltered();
 };
 
-class CleytinEngine {
+class CleytinEngine
+{
 public:
     CleytinEngine();
     ~CleytinEngine();
@@ -135,10 +146,10 @@ public:
     bool removeObject(CEGraphicObject *obj, bool freeMemory = false);
     bool removeObjectAt(size_t index, bool freeMemory = false);
     void clear(bool freeMemory = false);
-    std::vector<size_t>* getCollisionsOn(size_t index);
-    CEGraphicObject* getObjectAt(size_t index);
-    std::vector<size_t>* getObjectsAt(CEPoint *point);
-    size_t getObjectIndex(CEGraphicObject* obj);
+    std::vector<size_t> *getCollisionsOn(size_t index);
+    CEGraphicObject *getObjectAt(size_t index);
+    std::vector<size_t> *getObjectsAt(CEPoint *point);
+    size_t getObjectIndex(CEGraphicObject *obj);
     size_t getObjectsCount();
     void renderToCanvas();
     uint64_t render();
@@ -148,15 +159,16 @@ public:
 
 private:
     CECanvas *canvas;
-    std::vector <CEGraphicObject*> objects;
+    std::vector<CEGraphicObject *> objects;
 };
 
-class CEActiveObject : public CEGraphicObject {
+class CEActiveObject : public CEGraphicObject
+{
 public:
     CEActiveObject();
     virtual ~CEActiveObject();
-    virtual CERenderWindow* getDefaultRenderWindow();
-    virtual CERenderWindow* getRenderWindow();
+    virtual CERenderWindow *getDefaultRenderWindow();
+    virtual CERenderWindow *getRenderWindow();
     virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
     virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
     virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand = 0);
