@@ -800,39 +800,6 @@ bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color)
     return true;
 }
 
-CEColor *CEGraphicObject::getColorAt(int x, int y)
-{
-    if (this->getMirrored())
-    {
-        this->mirrorPixel(x);
-    }
-    if (this->getRotation() > 0)
-    {
-        // As coordenadas já consideram que o objeto foi rotacionado
-        // Portanto é necessário rotacionar o ponto inversamente
-        // 360 graus - a rotação do objeto
-        if (!this->rotatePixel(x, y, 360 - this->getRotation()))
-        {
-            return NULL;
-        }
-    }
-
-    if (x < 0 || y < 0)
-    {
-        return NULL;
-    }
-    unsigned int posX = (unsigned int)x;
-    unsigned int posY = (unsigned int)y;
-
-    CEColor *color = this->doGetColorAt(posX, posY);
-    if (this->getNegative() && color != NULL)
-    {
-        *color = -*color;
-    }
-
-    return color;
-}
-
 bool CEGraphicObject::containsPoint(CEPoint *point, unsigned int expand)
 {
     CERenderWindow *w = this->getRenderWindow();

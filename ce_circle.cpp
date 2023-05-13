@@ -86,19 +86,3 @@ bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window)
 
     return allPixelRendered;
 }
-
-CEColor *CECircle::doGetColorAt(unsigned int x, unsigned int y)
-{
-    CERenderWindow *window = this->getRenderWindow();
-    window->resetToStartPosition();
-    CEPoint *center = window->getCenterPoint();
-    delete window;
-    unsigned int distanceToCenter = center->distanceTo(CEPoint((int)x, (int)y));
-    delete center;
-    if (((distanceToCenter <= (this->getRadius() - 1)) && this->filled) || distanceToCenter == (this->getRadius() - 1))
-    {
-        return this->getBaseColor();
-    }
-
-    return NULL;
-}

@@ -129,26 +129,3 @@ CEColor CEColorfulBitmap::rgb565ToColor(const uint16_t raw)
 
     return r;
 }
-
-CEColor *CEColorfulBitmap::doGetColorAt(unsigned int x, unsigned int y)
-{
-    unsigned int posX = x / this->getSizeMultiplier();
-    if (x > this->getSizeMultiplier() && x % this->getSizeMultiplier())
-    {
-        posX++;
-    }
-
-    unsigned int posY = y / this->getSizeMultiplier();
-    if (y > this->getSizeMultiplier() && y % this->getSizeMultiplier())
-    {
-        posY++;
-    }
-
-    unsigned int index = posX + (posY * this->width);
-    if ((this->buffer[index] != this->alphaColor))
-    {
-        return this->rgb565ToColor(this->buffer[index]);
-    }
-
-    return NULL;
-}
