@@ -935,7 +935,6 @@ void CEGraphicObject::addCurrentWindowAsAltered()
     {
         if (this->alteredWindows->at(i)->containsWindow(w))
         {
-            printf("Window already added\r\n");
             return;
         }
     }
