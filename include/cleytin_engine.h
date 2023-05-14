@@ -60,7 +60,9 @@ public:
     std::vector<CEPoint *> *getAllPoints();
 
     bool containsPoint(CEPoint *point);
+    bool containsWindow(CERenderWindow *window);
     void expand(unsigned int size);
+    CERenderWindow *clone();
 
     void rotate(uint16_t degrees);
     void resetToStartPosition();

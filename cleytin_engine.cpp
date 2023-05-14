@@ -481,6 +481,41 @@ bool CERenderWindow::containsPoint(CEPoint *point)
     return r;
 }
 
+bool CERenderWindow::containsWindow(CERenderWindow *window) {
+    return this->containsPoint(window->topLeft) &&
+        this->containsPoint(window->topRight) &&
+        this->containsPoint(window->bottomLeft) &&
+        this->containsPoint(window->bottomRight);
+}
+
+CERenderWindow *CERenderWindow::clone() {
+    CERenderWindow *r = new CERenderWindow(this->topLeft, this->bottomRight);
+    if(this->topLeft) {
+        r->topLeft = this->topLeft->clone();
+    } else {
+        r->topLeft = nullptr;
+    }
+    if(this->topRight) {
+        r->topRight = this->topRight->clone();
+    } else {
+        r->topRight = nullptr;
+    }
+    if(this->bottomLeft) {
+        r->bottomLeft = this->bottomLeft->clone();
+    } else {
+        r->bottomLeft = nullptr;
+    }
+    if(this->bottomRight) {
+        r->bottomRight = this->bottomRight->clone();
+    } else {
+        r->bottomRight = nullptr;
+    }
+    r->setMaxX(this->maxX);
+    r->setMaxY(this->maxY);
+    
+    return r;
+}
+
 void CERenderWindow::expand(unsigned int size)
 {
     if (size >= this->maxY || size >= this->maxX)
@@ -898,8 +933,9 @@ void CEGraphicObject::addCurrentWindowAsAltered()
     CERenderWindow *w = this->getContainingWindow();
     for (size_t i = 0; i < this->alteredWindows->size(); i++)
     {
-        if (*w == *this->alteredWindows->at(i))
+        if (this->alteredWindows->at(i)->containsWindow(w))
         {
+            printf("Window already added\r\n");
             return;
         }
     }
