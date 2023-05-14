@@ -15,6 +15,7 @@ CEMenuHelper::CEMenuHelper() {
    this->highlightTextColor = {0xFF,0xFF,0xFF};
    this->optionsSizeMultiplier = 2;
    this->title = NULL;
+   this->addCurrentWindowAsAltered();
 }
 
 void CEMenuHelper::reset() {
@@ -22,6 +23,7 @@ void CEMenuHelper::reset() {
    this->itemsOffset = 0;
    this->selectionMade = false;
    this->btnStartState = false;
+   this->addCurrentWindowAsAltered();
 }
 
 
@@ -38,6 +40,7 @@ CEMenuHelper::~CEMenuHelper() {
 
 void CEMenuHelper::setOptionsSizeMultiplier(uint8_t size) {
     this->optionsSizeMultiplier = size;
+    this->addCurrentWindowAsAltered();
 }
 uint8_t CEMenuHelper::getOptionsSizeMultiplier() {
     return this->optionsSizeMultiplier;
@@ -49,6 +52,7 @@ void CEMenuHelper::setTitle(const char *title) {
     for (size_t i = 0; i < titleSize; i++) {
         this->title[i] = title[i];
     }
+    this->addCurrentWindowAsAltered();
 }
 const char *CEMenuHelper::getTitle() {
     return this->title;
@@ -56,12 +60,15 @@ const char *CEMenuHelper::getTitle() {
 
 void CEMenuHelper::setHighlightBGColor(CEColor color) {
     this->highlightBGColor = color;
+    this->addCurrentWindowAsAltered();
 }
 void CEMenuHelper::setHighlightTextColor(CEColor color) {
     this->highlightTextColor = color;
+    this->addCurrentWindowAsAltered();
 }
 void CEMenuHelper::setTextColor(CEColor color) {
     this->textColor = color;
+    this->addCurrentWindowAsAltered();
 }
 CEColor CEMenuHelper::getHighlightBGColor() {
     return this->highlightBGColor;
@@ -79,6 +86,7 @@ void CEMenuHelper::clearOptions() {
     }
     this->options->clear();
     this->selected = 0;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEMenuHelper::setRotation(uint16_t rotation) {
@@ -104,14 +112,17 @@ void CEMenuHelper::addOption(const char *label, uint id) {
     *(copyLabel + labelSize) = '\0';
     
     this->options->push_back({copyLabel, id});
+    this->addCurrentWindowAsAltered();
 }
 
 void CEMenuHelper::setWidth(unsigned int w) {
     this->width = w;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEMenuHelper::setHeight(unsigned int h) {
     this->height = h;
+    this->addCurrentWindowAsAltered();
 }
 
 unsigned int CEMenuHelper::getWidth() {
@@ -175,6 +186,7 @@ void CEMenuHelper::moveCursorDown() {
             this->itemsOffset++;
         }
     }
+    this->addCurrentWindowAsAltered();
 }
 
 void CEMenuHelper::moveCursorUp() {
@@ -191,6 +203,7 @@ void CEMenuHelper::moveCursorUp() {
             this->itemsOffset--;
         }
     }
+    this->addCurrentWindowAsAltered();
 }
 
 CERenderWindow* CEMenuHelper::getRenderWindow() {

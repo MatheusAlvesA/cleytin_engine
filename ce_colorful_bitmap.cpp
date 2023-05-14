@@ -7,6 +7,7 @@ CEColorfulBitmap::CEColorfulBitmap()
     this->buffer = NULL;
     this->alphaColor = 0;
     this->sizeMultiplier = 1;
+    this->addCurrentWindowAsAltered();
 }
 
 CEColorfulBitmap::~CEColorfulBitmap()
@@ -17,16 +18,19 @@ CEColorfulBitmap::~CEColorfulBitmap()
 void CEColorfulBitmap::setWidth(unsigned int w)
 {
     this->width = w;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEColorfulBitmap::setHeight(unsigned int h)
 {
     this->height = h;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEColorfulBitmap::setSizeMultiplier(uint8_t size)
 {
     this->sizeMultiplier = size;
+    this->addCurrentWindowAsAltered();
 }
 
 uint8_t CEColorfulBitmap::getSizeMultiplier()
@@ -37,6 +41,7 @@ uint8_t CEColorfulBitmap::getSizeMultiplier()
 void CEColorfulBitmap::setAlphaColor(uint16_t color)
 {
     this->alphaColor = color;
+    this->addCurrentWindowAsAltered();
 }
 
 unsigned int CEColorfulBitmap::getWidth()
@@ -68,6 +73,7 @@ CERenderWindow *CEColorfulBitmap::getRenderWindow()
 void CEColorfulBitmap::setBuffer(uint16_t *buffer)
 {
     this->buffer = buffer;
+    this->addCurrentWindowAsAltered();
 }
 
 uint16_t *CEColorfulBitmap::getBuffer()

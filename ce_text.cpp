@@ -9,6 +9,7 @@ CEText::CEText() {
     this->sizeMultiplier = 1;
     this->bgColor = {0xFF, 0xFF, 0xFF};
     this->bgColorSet = false;
+    this->addCurrentWindowAsAltered();
 }
 
 CEText::~CEText() {
@@ -19,6 +20,7 @@ CEText::~CEText() {
 void CEText::setCustomFont(CEFont *font) {
     delete this->font;
     this->font = font;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEText::setText(const char *buffer) {
@@ -26,15 +28,18 @@ void CEText::setText(const char *buffer) {
     this->text = this->font->parseString(buffer);
     char *tmp = this->text;
     for (this->length = 0; *(tmp++) != '\0'; this->length++);
+    this->addCurrentWindowAsAltered();
 }
 
 void CEText::setWrap(bool wrap) {
     this->wrap = wrap;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEText::setBGColor(CEColor color) {
     this->bgColor = color;
     this->bgColorSet = true;
+    this->addCurrentWindowAsAltered();
 }
 
 CEColor CEText::getBGColor() {
@@ -71,6 +76,7 @@ uint8_t CEText::getSizeMultiplier() {
 
 void CEText::setSizeMultiplier(uint8_t size) {
     this->sizeMultiplier = size;
+    this->addCurrentWindowAsAltered();
 }
 
 CERenderWindow* CEText::getRenderWindow() {

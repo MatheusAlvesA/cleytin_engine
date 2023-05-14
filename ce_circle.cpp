@@ -4,11 +4,13 @@ CECircle::CECircle()
 {
     this->radius = 6;
     this->filled = false;
+    this->addCurrentWindowAsAltered();
 }
 
 void CECircle::setRadius(unsigned int r)
 {
     this->radius = r;
+    this->addCurrentWindowAsAltered();
 }
 
 unsigned int CECircle::getRadius()
@@ -30,6 +32,7 @@ CERenderWindow *CECircle::getRenderWindow()
 void CECircle::setFilled(bool fill)
 {
     this->filled = fill;
+    this->addCurrentWindowAsAltered();
 }
 
 bool CECircle::getFilled()

@@ -5,6 +5,7 @@ CEBitmap::CEBitmap() {
    this->height = 0;
    this->sizeMultiplier = 1;
    this->buffer = NULL;
+   this->addCurrentWindowAsAltered();
 }
 
 CEBitmap::~CEBitmap() {
@@ -13,14 +14,17 @@ CEBitmap::~CEBitmap() {
 
 void CEBitmap::setWidth(unsigned int w) {
     this->width = w;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEBitmap::setHeight(unsigned int h) {
     this->height = h;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEBitmap::setSizeMultiplier(uint8_t size) {
     this->sizeMultiplier = size;
+    this->addCurrentWindowAsAltered();
 }
 
 uint8_t CEBitmap::getSizeMultiplier() {
@@ -47,6 +51,7 @@ CERenderWindow* CEBitmap::getRenderWindow() {
 
 void CEBitmap::setBuffer(uint8_t *buffer) {
     this->buffer = buffer;
+    this->addCurrentWindowAsAltered();
 }
 
 uint8_t *CEBitmap::getBuffer() {

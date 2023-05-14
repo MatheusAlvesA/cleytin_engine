@@ -8,6 +8,7 @@ CEContainer::CEContainer() {
    this->alignX = CEAlign::START;
    this->alignY = CEAlign::START;
    this->objects = new std::vector <CEGraphicObject*>();
+   this->addCurrentWindowAsAltered();
 }
 
 CEContainer::~CEContainer() {
@@ -30,15 +31,21 @@ void CEContainer::setNegative(bool negative) {
     this->negative = false;
 }
 
+void CEContainer::onObjectUpdated() {
+    this->addCurrentWindowAsAltered();
+}
 
 unsigned int CEContainer::addObject(CEGraphicObject *obj) {
     this->objects->push_back(obj);
     std::sort(this->objects->begin(), this->objects->end(), compareObjectPriority);
+    this->addCurrentWindowAsAltered();
     return (unsigned int) this->objects->size();
 }
 
 bool CEContainer::removeObject(CEGraphicObject *obj) {
-    return this->removeObjectAt(this->getObjectIndex(obj));
+    bool r = this->removeObjectAt(this->getObjectIndex(obj));
+    this->addCurrentWindowAsAltered();
+    return r;
 }
 
 bool CEContainer::removeObjectAt(size_t index) {
@@ -51,6 +58,8 @@ bool CEContainer::removeObjectAt(size_t index) {
         index++;
     }
     this->objects->pop_back();
+
+    this->addCurrentWindowAsAltered();
     return true;
 }
 
@@ -78,10 +87,12 @@ size_t CEContainer::getObjectIndex(CEGraphicObject* obj) {
 
 void CEContainer::setWidth(unsigned int w) {
     this->width = w;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEContainer::setHeight(unsigned int h) {
     this->height = h;
+    this->addCurrentWindowAsAltered();
 }
 
 unsigned int CEContainer::getWidth() {
@@ -94,14 +105,17 @@ unsigned int CEContainer::getHeight() {
 
 void CEContainer::setPositioningStyle(CEPositioningStyle style) {
     this->positioningStyle = style;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEContainer::setAlignX(CEAlign align) {
     this->alignX = align;
+    this->addCurrentWindowAsAltered();
 }
 
 void CEContainer::setAlignY(CEAlign align) {
     this->alignY = align;
+    this->addCurrentWindowAsAltered();
 }
 
 CERenderWindow* CEContainer::getRenderWindow() {

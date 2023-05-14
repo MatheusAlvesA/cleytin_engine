@@ -165,13 +165,27 @@ CEGraphicObject *CleytinEngine::getObjectAt(size_t index)
     return this->objects[index];
 }
 
-void CleytinEngine::renderToCanvas()
+bool CleytinEngine::renderToCanvas()
 {
+    bool needRender = false;
+    for (size_t i = 0; i < this->objects.size(); i++)
+    {
+        std::vector<CERenderWindow *> *alteredWindows = this->objects[i]->getAlteredWindows();
+        if(alteredWindows->size() > 0) {
+            needRender = true;
+        }
+        this->objects[i]->clearAlteredWindows();
+    }
+    if(!needRender) {
+        return false;
+    }
+    
     this->canvas->clear();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         this->objects[i]->renderToCanvas(this->canvas);
     }
+    return true;
 }
 
 uint64_t CleytinEngine::render()
@@ -186,8 +200,10 @@ uint64_t CleytinEngine::render()
             obj->beforeRender(this);
         }
     }
-    this->renderToCanvas();
-    this->canvas->startRender();
+    bool needRender = this->renderToCanvas();
+    if(needRender) {
+        this->canvas->startRender();
+    }
     return esp_timer_get_time() - start;
 }
 
@@ -547,7 +563,6 @@ CEGraphicObject::CEGraphicObject()
     this->maxY = LCD_HEIGHT_PIXELS;
     this->baseColor = {0, 0, 0};
     this->alteredWindows = new std::vector<CERenderWindow *>();
-    this->addCurrentWindowAsAltered();
 }
 
 CEGraphicObject::~CEGraphicObject()
@@ -591,12 +606,14 @@ void CEGraphicObject::setPriority(unsigned int priority)
 
 void CEGraphicObject::setPosX(unsigned int posX)
 {
+    this->addCurrentWindowAsAltered();
     this->posX = posX;
     this->addCurrentWindowAsAltered();
 }
 
 void CEGraphicObject::setPosY(unsigned int posY)
 {
+    this->addCurrentWindowAsAltered();
     this->posY = posY;
     this->addCurrentWindowAsAltered();
 }
@@ -631,6 +648,7 @@ void CEGraphicObject::setRotation(uint16_t rotation)
 
 void CEGraphicObject::setPos(unsigned int x, unsigned int y)
 {
+    this->addCurrentWindowAsAltered();
     this->posX = x;
     this->posY = y;
     this->addCurrentWindowAsAltered();
@@ -870,6 +888,8 @@ CERenderWindow *CEGraphicObject::getContainingWindow()
     CEPoint *topLeft = new CEPoint(minX, minY);
     CEPoint *bottomRight = new CEPoint(maxX, maxY);
     w->setPoints(topLeft, bottomRight);
+    delete topLeft;
+    delete bottomRight;
     return w;
 }
 

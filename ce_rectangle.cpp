@@ -4,14 +4,17 @@ CERectangle::CERectangle() {
    this->width = 0;
    this->height = 0;
    this->filled = false;
+   this->addCurrentWindowAsAltered();
 }
 
 void CERectangle::setWidth(unsigned int w) {
     this->width = w;
+    this->addCurrentWindowAsAltered();
 }
 
 void CERectangle::setHeight(unsigned int h) {
     this->height = h;
+    this->addCurrentWindowAsAltered();
 }
 
 unsigned int CERectangle::getWidth() {
@@ -34,6 +37,7 @@ CERenderWindow* CERectangle::getRenderWindow() {
 
 void CERectangle::setFilled(bool fill) {
     this->filled = fill;
+    this->addCurrentWindowAsAltered();
 }
 
 bool CERectangle::getFilled() {

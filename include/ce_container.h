@@ -43,6 +43,8 @@ public:
     void setMirrored(bool mirrored);
     void setNegative(bool negative);
 
+    void onObjectUpdated();
+
     CERenderWindow* getRenderWindow();
     bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
 

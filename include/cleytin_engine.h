@@ -150,7 +150,7 @@ public:
     std::vector<size_t> *getObjectsAt(CEPoint *point);
     size_t getObjectIndex(CEGraphicObject *obj);
     size_t getObjectsCount();
-    void renderToCanvas();
+    bool renderToCanvas();
     uint64_t render();
     uint64_t renderSync();
     uint64_t waitRender();
