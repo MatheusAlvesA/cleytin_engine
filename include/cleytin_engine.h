@@ -33,6 +33,7 @@ public:
     CEPoint *end;
 
     int calculateSideOfPoint(CEPoint *point);
+    int getSize();
 };
 
 class CERenderWindow
@@ -66,6 +67,8 @@ public:
 
     void rotate(uint16_t degrees);
     void resetToStartPosition();
+
+    bool isZeroSize();
 
     bool operator==(const CERenderWindow &window);
 
@@ -212,6 +215,5 @@ protected:
 };
 
 bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b);
-void delete_points_vector(std::vector<CEPoint *> *v);
 
 #endif

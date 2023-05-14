@@ -5,7 +5,8 @@ bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b)
     return a->getPriority() < b->getPriority();
 }
 
-void delete_points_vector(std::vector<CEPoint *> *v)
+template<typename T>
+void delete_pointers_vector(std::vector<T *> *v)
 {
     for (size_t i = 0; i < v->size(); i++)
     {
@@ -143,9 +144,9 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
         {
             r->push_back(i);
         }
-        delete_points_vector(candidatePoints);
+        delete_pointers_vector<CEPoint>(candidatePoints);
     }
-    delete_points_vector(targetPoints);
+    delete_pointers_vector<CEPoint>(targetPoints);
 
     return r;
 }
@@ -167,24 +168,38 @@ CEGraphicObject *CleytinEngine::getObjectAt(size_t index)
 
 bool CleytinEngine::renderToCanvas()
 {
-    bool needRender = false;
+    std::vector<CERenderWindow *> *alteredWindows = new std::vector<CERenderWindow *>();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
-        std::vector<CERenderWindow *> *alteredWindows = this->objects[i]->getAlteredWindows();
-        if(alteredWindows->size() > 0) {
-            needRender = true;
+        std::vector<CERenderWindow *> *currentList = this->objects[i]->getAlteredWindows();
+        for (size_t i = 0; i < currentList->size(); i++)
+        {
+            alteredWindows->push_back(currentList->at(i)->clone());
         }
         this->objects[i]->clearAlteredWindows();
     }
-    if(!needRender) {
+    if(alteredWindows->size() <= 0) {
+        delete alteredWindows;
         return false;
     }
-    
+    printf("\r\nJanelas listadas\r\n");
+    for(size_t i = 0; i < alteredWindows->size(); i++) {
+        CERenderWindow *window = alteredWindows->at(i);
+        printf(">>> %d\r\n", i);
+        printf("TL %d %d\r\n", window->topLeft->x, window->topLeft->y);
+        printf("BR %d %d\r\n", window->bottomRight->x, window->bottomRight->y);
+        printf("--------------\r\n");
+    }
+    //TODO, otimizar janelas
+    //TODO, renderizar só as janelas
+
     this->canvas->clear();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         this->objects[i]->renderToCanvas(this->canvas);
     }
+
+    delete_pointers_vector<CERenderWindow>(alteredWindows);
     return true;
 }
 
@@ -303,6 +318,11 @@ int CELine::calculateSideOfPoint(CEPoint *point)
     return (point->y - this->start->y) * (this->end->x - this->start->x) - (point->x - this->start->x) * (this->end->y - this->start->y);
 }
 
+int CELine::getSize()
+{
+    return this->start->distanceTo(*this->end);
+}
+
 /* CERenderWindow */
 
 CERenderWindow::CERenderWindow(const CEPoint *start, const CEPoint *end)
@@ -332,6 +352,30 @@ void CERenderWindow::setMaxX(unsigned int x)
 void CERenderWindow::setMaxY(unsigned int y)
 {
     this->maxY = y;
+}
+
+bool CERenderWindow::isZeroSize() {
+    CELine *topLine = this->getTopLine();
+    CELine *bottomLine = this->getBottomLine();
+    CELine *leftLine = this->getLeftLine();
+    CELine *rightLine = this->getRightLine();
+
+    bool r = false;
+    if(
+        topLine->getSize() == 0 &&
+        bottomLine->getSize() == 0 &&
+        leftLine->getSize() == 0 &&
+        rightLine->getSize() == 0
+    ) {
+        r = true;
+    }
+
+    delete topLine;
+    delete bottomLine;
+    delete leftLine;
+    delete rightLine;
+
+    return r;
 }
 
 void CERenderWindow::setPoints(const CEPoint *start, const CEPoint *end)
@@ -558,7 +602,7 @@ size_t CERenderWindow::getHeight()
             max = points->at(i)->y;
         }
     }
-    delete_points_vector(points);
+    delete_pointers_vector<CEPoint>(points);
     return (size_t)(max - min);
 }
 
@@ -578,7 +622,7 @@ size_t CERenderWindow::getWidth()
             max = points->at(i)->x;
         }
     }
-    delete_points_vector(points);
+    delete_pointers_vector<CEPoint>(points);
     return (size_t)(max - min);
 }
 
@@ -918,7 +962,7 @@ CERenderWindow *CEGraphicObject::getContainingWindow()
             maxY = (*points)[i]->y;
         }
     }
-    delete_points_vector(points);
+    delete_pointers_vector<CEPoint>(points);
 
     CEPoint *topLeft = new CEPoint(minX, minY);
     CEPoint *bottomRight = new CEPoint(maxX, maxY);
@@ -933,8 +977,17 @@ void CEGraphicObject::addCurrentWindowAsAltered()
     CERenderWindow *w = this->getContainingWindow();
     for (size_t i = 0; i < this->alteredWindows->size(); i++)
     {
-        if (this->alteredWindows->at(i)->containsWindow(w))
+        if(*this->alteredWindows->at(i) == *w) {
+            delete w;
+            return;
+        }
+
+        if (
+            !this->alteredWindows->at(i)->isZeroSize() && 
+            this->alteredWindows->at(i)->containsWindow(w)
+            )
         {
+            delete w;
             return;
         }
     }
