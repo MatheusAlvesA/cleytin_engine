@@ -18,6 +18,7 @@ public:
 
     CEPoint(int x, int y);
     bool operator==(const CEPoint &dot);
+    bool operator!=(const CEPoint &dot);
 
     void rotate(CEPoint *rotationCenter, uint16_t degrees);
     CEPoint *clone();
@@ -71,6 +72,7 @@ public:
     bool isZeroSize();
 
     bool operator==(const CERenderWindow &window);
+    bool operator!=(const CERenderWindow &window);
 
 private:
     unsigned int maxX;
