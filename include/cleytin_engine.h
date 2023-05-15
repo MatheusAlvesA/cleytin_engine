@@ -216,6 +216,4 @@ protected:
     CEGraphicObject *graphicObject;
 };
 
-bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b);
-
 #endif
