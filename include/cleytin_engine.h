@@ -159,8 +159,6 @@ public:
     size_t getObjectsCount();
     bool renderToCanvas();
     uint64_t render();
-    uint64_t renderSync();
-    uint64_t waitRender();
     uint64_t loop();
 
 private:

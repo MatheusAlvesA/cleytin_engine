@@ -1,14 +1,12 @@
 #include "ce_canvas_tftlcd_320x240.h"
 
 CECanvasTFTLCD320x240::CECanvasTFTLCD320x240() {
-    this->frameBuffer = new uint16_t[LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS];
-    memset(this->frameBuffer, 0xFF, LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS * 2);
+    this->frameBuffer = new uint16_t[this->getCanvasWidth() * this->getCanvasHeight()];;
+    this->setBackgroundColor({0xFF, 0xFF, 0xFF});
+    this->prepareWindow(0, 0, this->getCanvasWidth(), this->getCanvasHeight());
 
     this->lcdAPI = new CleytinTFTAPI();
-    this->startRender();
-    this->waitRenderFinish();
-
-    this->setBackgroundColor({0xFF, 0xFF, 0xFF});
+    this->render();
 }
 
 CECanvasTFTLCD320x240::~CECanvasTFTLCD320x240() {
@@ -17,18 +15,19 @@ CECanvasTFTLCD320x240::~CECanvasTFTLCD320x240() {
 }
 
 bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, const CEColor color) {
-    if(x >= LCD_WIDTH_PIXELS || y >= LCD_HEIGHT_PIXELS) {
+    if(x >= this->endX || y >= this->endY || x < this->startX || y < this->startY) {
         return false;
     }
-    this->frameBuffer[y * LCD_WIDTH_PIXELS + x] = this->color2rgb565(color);
+
+    x -= this->startX;
+    y -= this->startY;
+    uint16_t width = this->endX - this->startX;
+    this->frameBuffer[y * width + x] = this->color2rgb565(color);
     return true;
 }
+
 bool CECanvasTFTLCD320x240::clearPixel(unsigned int x, unsigned int y) {
-    if(x >= LCD_WIDTH_PIXELS || y >= LCD_HEIGHT_PIXELS) {
-        return false;
-    }
-    this->frameBuffer[y * LCD_WIDTH_PIXELS + x] = this->color2rgb565(this->getBackgroundColor());
-    return true;
+    return this->setPixel(x, y, this->getBackgroundColor());
 }
 
 uint16_t CECanvasTFTLCD320x240::color2rgb565(const CEColor color) {
@@ -51,30 +50,58 @@ unsigned int CECanvasTFTLCD320x240::getCanvasHeight() {
     return LCD_HEIGHT_PIXELS;
 }
 
-void CECanvasTFTLCD320x240::startRender() {
-    this->lcdAPI->sendBuffer(this->frameBuffer);
-}
-
-void CECanvasTFTLCD320x240::waitRenderFinish() {
+bool CECanvasTFTLCD320x240::render() {
+    this->lcdAPI->sendBuffer(
+        this->frameBuffer,
+        this->startX,
+        this->startY,
+        this->endX,
+        this->endY
+    );
     this->lcdAPI->waitBufferTransfer();
+
+    return true;
 }
 
 void CECanvasTFTLCD320x240::clear() {
     const CEColor bgColor = this->getBackgroundColor();
     const CEColor white = {0xFF, 0xFF, 0xFF};
     const CEColor black = {0x0, 0x0, 0x0};
+
+    uint16_t width = this->endX - this->startX;
+    uint16_t height = this->endY - this->startY;
+
     if(bgColor == white) {
-        memset(this->frameBuffer, 0xFF, LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS * 2);
+        memset(this->frameBuffer, 0xFF, width * height * 2);
         return;
     }
     if(bgColor == black) {
-        memset(this->frameBuffer, 0x0, LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS * 2);
+        memset(this->frameBuffer, 0x0, width * height * 2);
         return;
     }
 
-    for (size_t i = 0; i < this->getCanvasWidth(); i++) {
-        for (size_t j = 0; j < this->getCanvasHeight(); j++) {
+    for (size_t i = this->startX; i < this->endX; i++) {
+        for (size_t j = this->startY; j < this->endY; j++) {
             this->setPixel(i, j, bgColor);
         }
     }
+}
+
+void CECanvasTFTLCD320x240::prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY) {
+    if(endX == 0 || endY == 0 || startX > endX || startY > endY) {
+        return;
+    }
+    if(endX > this->getCanvasWidth()) {
+        endX = this->getCanvasWidth();
+    }
+    if(endY > this->getCanvasHeight()) {
+        endY = this->getCanvasHeight();
+    }
+
+    this->startX = (uint16_t) startX;
+    this->startY = (uint16_t) startY;
+    this->endX = (uint16_t) endX;
+    this->endY = (uint16_t) endY;
+
+    this->clear();
 }

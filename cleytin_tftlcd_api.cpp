@@ -109,7 +109,7 @@ void CleytinTFTAPI::lcdInit() {
     }
 }
 
-bool CleytinTFTAPI::sendBuffer(uint16_t *buff) {
+bool CleytinTFTAPI::sendBuffer(uint16_t *buff, uint16_t startX, uint16_t startY, uint16_t endX, uint16_t endY) {
     if(this->sendingBuffer) {
         printf("CleytinTFTAPI tentativa de enviar quando ocupado");
         return false;
@@ -128,24 +128,24 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff) {
     // Comando: Configurar culuna
     trans[0].tx_data[0] = 0x2A;
     // Parametros do comando
-    trans[1].tx_data[0] = 0;                            //High byte da coordenada inicial
-    trans[1].tx_data[1] = 0;                            //Low byte da coordenada inicial
-    trans[1].tx_data[2] = LCD_WIDTH_PIXELS >> 8;        //High byte da coordenada final
-    trans[1].tx_data[3] = LCD_WIDTH_PIXELS & 0xff;      //Low byte da coordenada final
+    trans[1].tx_data[0] = (uint8_t)(startX >> 8);       //High byte da coordenada inicial
+    trans[1].tx_data[1] = (uint8_t)(startX & 0xff);     //Low byte da coordenada inicial
+    trans[1].tx_data[2] = (uint8_t)(endX >> 8);         //High byte da coordenada final
+    trans[1].tx_data[3] = (uint8_t)(endX & 0xff);       //Low byte da coordenada final
 
     // Comando: Configurar linha
     trans[2].tx_data[0] = 0x2B;
     // Parametros do comando
-    trans[3].tx_data[0] = 0;                            //High byte da coordenada inicial
-    trans[3].tx_data[1] = 0;                            //Low byte da coordenada inicial
-    trans[3].tx_data[2] = LCD_HEIGHT_PIXELS >> 8;       //High byte da coordenada final
-    trans[3].tx_data[3] = LCD_HEIGHT_PIXELS & 0xff;     //Low byte da coordenada final
+    trans[3].tx_data[0] = (uint8_t)(startY >> 8);       //High byte da coordenada inicial
+    trans[3].tx_data[1] = (uint8_t)(startY & 0xff);     //Low byte da coordenada inicial
+    trans[3].tx_data[2] = (uint8_t)(endY >> 8);         //High byte da coordenada final
+    trans[3].tx_data[3] = (uint8_t)(endY & 0xff);       //Low byte da coordenada final
 
     // Comando: Escrever na memoria
     trans[4].tx_data[0] = 0x2C;
     // Parametro do comando, o buffer de pixels
     trans[5].tx_buffer = buff;
-    trans[5].length = LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS * 16;
+    trans[5].length = (endX - startX) * (endY - startY) * 16;
     trans[5].flags = 0;
 
     //Enfileirando todas as transações

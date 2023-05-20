@@ -218,6 +218,11 @@ bool CERenderWindow::containsWindow(CERenderWindow *window) {
 
 CERenderWindow *CERenderWindow::clone() {
     CERenderWindow *r = new CERenderWindow(this->topLeft, this->bottomRight);
+    delete r->topLeft;
+    delete r->topRight;
+    delete r->bottomLeft;
+    delete r->bottomRight;
+
     if(this->topLeft) {
         r->topLeft = this->topLeft->clone();
     } else {

@@ -4,8 +4,7 @@
 CleytinEngine::CleytinEngine()
 {
     this->canvas = new CECanvasTFTLCD320x240();
-    this->canvas->startRender();
-    this->canvas->waitRenderFinish();
+    this->canvas->render();
 }
 
 CleytinEngine::~CleytinEngine()
@@ -190,7 +189,6 @@ bool CleytinEngine::renderToCanvas()
 uint64_t CleytinEngine::render()
 {
     uint64_t start = esp_timer_get_time();
-    this->canvas->waitRenderFinish(); // Finalize o render anterior caso não tenha
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         CEActiveObject *obj = dynamic_cast<CEActiveObject *>(this->objects[i]);
@@ -199,25 +197,13 @@ uint64_t CleytinEngine::render()
             obj->beforeRender(this);
         }
     }
+    
+    this->canvas->prepareWindow(0, 0,  this->canvas->getCanvasWidth(),  this->canvas->getCanvasHeight());
     bool needRender = this->renderToCanvas();
     if(needRender) {
-        this->canvas->startRender();
+        this->canvas->render();
     }
     return esp_timer_get_time() - start;
-}
-
-uint64_t CleytinEngine::waitRender()
-{
-    uint64_t start = esp_timer_get_time();
-    this->canvas->waitRenderFinish();
-    return esp_timer_get_time() - start;
-}
-
-uint64_t CleytinEngine::renderSync()
-{
-    uint64_t renderTime = this->render();
-    uint64_t sendTime = this->waitRender();
-    return renderTime + sendTime;
 }
 
 uint64_t CleytinEngine::loop()

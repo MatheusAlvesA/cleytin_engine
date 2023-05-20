@@ -17,13 +17,17 @@ public:
     unsigned int getCanvasHeight();
     bool setPixel(unsigned int x, unsigned int y, const CEColor color);
     bool clearPixel(unsigned int x, unsigned int y);
-    void startRender();
-    void waitRenderFinish();
+    bool render();
     void clear();
+    void prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 
 private:
     uint16_t *frameBuffer;
     CleytinTFTAPI *lcdAPI;
+    uint16_t startX;
+    uint16_t startY;
+    uint16_t endX;
+    uint16_t endY;
 
     uint16_t color2rgb565(const CEColor color);
 };

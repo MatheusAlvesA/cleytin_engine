@@ -130,7 +130,7 @@ public:
     uint32_t getLcdId();
     void sendCmd( const uint8_t cmd);
     void sendData(const uint8_t *data, int len);
-    bool sendBuffer(uint16_t *linedata);
+    bool sendBuffer(uint16_t *linedata, uint16_t startX, uint16_t startY, uint16_t endX, uint16_t endY);
     void waitBufferTransfer();
 
 private:
