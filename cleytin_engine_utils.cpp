@@ -49,8 +49,12 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
 
 CERenderWindow *fuse_container_from_top(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        *container->topLeft != *candidate->bottomLeft ||
-        *container->topRight != *candidate->bottomRight
+        container->topLeft->x != candidate->bottomLeft->x ||
+        container->topRight->x != candidate->bottomRight->x ||
+        container->topLeft->y > candidate->bottomLeft->y ||
+        container->topLeft->y < candidate->topLeft->y ||
+        container->topRight->y > candidate->bottomRight->y ||
+        container->topRight->y < candidate->topRight->y
     ) {
         // Não é possível fundir as janelas
         return NULL;
@@ -62,8 +66,12 @@ CERenderWindow *fuse_container_from_top(CERenderWindow *container, CERenderWindo
 
 CERenderWindow *fuse_container_from_bottom(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        *container->bottomLeft != *candidate->topLeft ||
-        *container->bottomRight != *candidate->topRight
+        container->bottomLeft->x != candidate->topLeft->x ||
+        container->bottomRight->x != candidate->topRight->x ||
+        container->bottomLeft->y < candidate->topLeft->y ||
+        container->bottomLeft->y > candidate->bottomLeft->y ||
+        container->bottomRight->y < candidate->topRight->y ||
+        container->bottomRight->y > candidate->bottomRight->y
     ) {
         // Não é possível fundir as janelas
         return NULL;
@@ -75,8 +83,12 @@ CERenderWindow *fuse_container_from_bottom(CERenderWindow *container, CERenderWi
 
 CERenderWindow *fuse_container_from_left(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        *container->topLeft != *candidate->topRight ||
-        *container->bottomLeft != *candidate->bottomRight
+        container->topLeft->y != candidate->topRight->y ||
+        container->bottomLeft->y != candidate->bottomRight->y ||
+        container->topLeft->x > candidate->topRight->x ||
+        container->topLeft->x < candidate->topLeft->x ||
+        container->bottomLeft->x > candidate->bottomRight->x ||
+        container->bottomLeft->x < candidate->bottomLeft->x
     ) {
         // Não é possível fundir as janelas
         return NULL;
@@ -88,8 +100,12 @@ CERenderWindow *fuse_container_from_left(CERenderWindow *container, CERenderWind
 
 CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        *container->topRight != *candidate->topLeft ||
-        *container->bottomRight != *candidate->bottomLeft
+        container->topRight->y != candidate->topLeft->y ||
+        container->bottomRight->y != candidate->bottomLeft->y ||
+        container->topRight->x < candidate->topLeft->x ||
+        container->topRight->x > candidate->topRight->x ||
+        container->bottomRight->x < candidate->bottomLeft->x ||
+        container->bottomRight->x > candidate->bottomRight->x
     ) {
         // Não é possível fundir as janelas
         return NULL;
@@ -129,7 +145,8 @@ std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow
     std::vector<size_t> *processedIndexes = new std::vector<size_t>();
 
     for (size_t i = 0; i < list->size(); i++) {
-        CERenderWindow *candidate = list->at(i)->clone();
+        if(in_array<size_t>(i, processedIndexes)) continue;
+
         CERenderWindow *fused = NULL;
         processedIndexes->push_back(i);
 
@@ -137,7 +154,7 @@ std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow
         {
             if(in_array<size_t>(j, processedIndexes)) continue;
 
-            fused = fuse_container(candidate, list->at(j));
+            fused = fuse_container(list->at(i), list->at(j));
             if(fused != NULL) {
                 processedIndexes->push_back(j);
                 break;
@@ -145,9 +162,8 @@ std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow
         }
 
         if(fused == NULL) {
-            r->push_back(candidate);
+            r->push_back(list->at(i)->clone());
         } else {
-            delete candidate;
             r->push_back(fused);
         }
     }
