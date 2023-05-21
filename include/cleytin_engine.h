@@ -207,6 +207,7 @@ public:
     virtual uint16_t getRotation();
     virtual size_t getRenderWindowHeight();
     virtual size_t getRenderWindowWidth();
+    virtual std::vector<CERenderWindow *> *getAlteredWindows();
 
     virtual void setup(CleytinEngine *engine) = 0;
     virtual void beforeLoop(CleytinEngine *engine) = 0;
@@ -215,6 +216,7 @@ public:
 
 protected:
     CEGraphicObject *graphicObject;
+    std::vector<CERenderWindow *> *emptyWindows;
 };
 
 #endif

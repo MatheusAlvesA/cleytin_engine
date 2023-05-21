@@ -3,6 +3,7 @@
 CEActiveObject::CEActiveObject()
 {
     this->graphicObject = NULL;
+    this->emptyWindows = new std::vector<CERenderWindow *>();
 }
 
 CEActiveObject::~CEActiveObject()
@@ -11,6 +12,7 @@ CEActiveObject::~CEActiveObject()
     {
         delete this->graphicObject;
     }
+    delete this->emptyWindows;
 }
 
 void CEActiveObject::setVisible(bool visible)
@@ -245,6 +247,14 @@ size_t CEActiveObject::getRenderWindowWidth()
         return this->graphicObject->getRenderWindowWidth();
     }
     return 0;
+}
+
+std::vector<CERenderWindow *> *CEActiveObject::getAlteredWindows() {
+    if (this->graphicObject)
+    {
+        return this->graphicObject->getAlteredWindows();
+    }
+    return this->emptyWindows;
 }
 
 std::vector<CEPoint *> *CEActiveObject::getAllRenderWindowPoints()
