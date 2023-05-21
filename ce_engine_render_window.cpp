@@ -46,10 +46,8 @@ bool CERenderWindow::isZeroSize() {
 
     bool r = false;
     if(
-        topLine->getSize() == 0 &&
-        bottomLine->getSize() == 0 &&
-        leftLine->getSize() == 0 &&
-        rightLine->getSize() == 0
+        (topLine->getSize() == 0 && bottomLine->getSize() == 0) ||
+        (leftLine->getSize() == 0 && rightLine->getSize() == 0)
     ) {
         r = true;
     }

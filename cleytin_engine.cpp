@@ -10,6 +10,9 @@ CleytinEngine::CleytinEngine()
 CleytinEngine::~CleytinEngine()
 {
     delete this->canvas;
+    for(int i = 0; i < this->alteredWindows.size(); i++) {
+        delete this->alteredWindows[i];
+    }
 }
 
 unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
@@ -45,6 +48,8 @@ bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory)
     {
         return false;
     }
+
+    this->alteredWindows.push_back(this->objects[index]->getContainingWindow()->clone());
 
     if (freeMemory)
     {
@@ -82,6 +87,12 @@ void CleytinEngine::clear(bool freeMemory)
         }
     }
     this->objects.clear();
+    this->alteredWindows.push_back(
+        new CERenderWindow(
+            new CEPoint(0, 0),
+            new CEPoint(this->canvas->getCanvasWidth(), this->canvas->getCanvasHeight())
+        )
+    );
 }
 
 std::vector<size_t> *CleytinEngine::getObjectsAt(CEPoint *point)
@@ -146,6 +157,24 @@ CEGraphicObject *CleytinEngine::getObjectAt(size_t index)
     return this->objects[index];
 }
 
+std::vector<CEGraphicObject *> *CleytinEngine::getObjectsOnWindow(CERenderWindow *window) {
+    std::vector<CEGraphicObject *> *r = new std::vector<CEGraphicObject *>();
+    for(size_t i = 0; i < this->objects.size(); i++) {
+        CEGraphicObject *obj = this->objects[i];
+        std::vector<CEPoint *> *objPoints = obj->getAllRenderWindowPoints();
+        for (size_t j = 0; j < objPoints->size(); j++)
+        {
+            if(window->containsPoint(objPoints->at(j))) {
+                r->push_back(obj);
+                break;
+            }
+        }
+        
+        delete_pointers_vector<CEPoint>(objPoints);
+    }
+    return r;
+}
+
 bool CleytinEngine::renderToCanvas()
 {
     std::vector<CERenderWindow *> *alteredWindows = new std::vector<CERenderWindow *>();
@@ -158,6 +187,11 @@ bool CleytinEngine::renderToCanvas()
         }
         this->objects[i]->clearAlteredWindows();
     }
+
+    for(size_t i = 0; i < this->alteredWindows.size(); i++) {
+        alteredWindows->push_back(this->alteredWindows[i]->clone());
+    }
+
     if(alteredWindows->size() <= 0) {
         delete alteredWindows;
         return false;
@@ -166,20 +200,26 @@ bool CleytinEngine::renderToCanvas()
     std::vector<CERenderWindow *> *optimizedAlteredWindows = optimize_container_windows(alteredWindows);
     delete_pointers_vector<CERenderWindow>(alteredWindows);
 
-    printf("\r\nJanelas otimizadas\r\n");
-    for(size_t i = 0; i < optimizedAlteredWindows->size(); i++) {
-        CERenderWindow *window = optimizedAlteredWindows->at(i);
-        printf(">>> %d\r\n", i);
-        printf("TL %d %d\r\n", window->topLeft->x, window->topLeft->y);
-        printf("BR %d %d\r\n", window->bottomRight->x, window->bottomRight->y);
-        printf("--------------\r\n");
-    }
-    //TODO, renderizar só as janelas
-
-    this->canvas->clear();
-    for (size_t i = 0; i < this->objects.size(); i++)
+    for (size_t i = 0; i < optimizedAlteredWindows->size(); i++)
     {
-        this->objects[i]->renderToCanvas(this->canvas);
+        CERenderWindow *w = optimizedAlteredWindows->at(i);
+        if(w->topLeft->x < 0) w->topLeft->x = 0;
+        if(w->topLeft->y < 0) w->topLeft->y = 0;
+
+        this->canvas->prepareWindow(
+            w->topLeft->x,
+            w->topLeft->y,
+            w->bottomRight->x,
+            w->bottomRight->y
+        );
+
+        std::vector<CEGraphicObject *> *objs = this->getObjectsOnWindow(w);
+        for (size_t i = 0; i < objs->size(); i++)
+        {
+            objs->at(i)->renderToCanvas(this->canvas);
+        }
+        delete objs;
+        this->canvas->render();
     }
 
     delete_pointers_vector<CERenderWindow>(optimizedAlteredWindows);
@@ -198,11 +238,13 @@ uint64_t CleytinEngine::render()
         }
     }
     
-    this->canvas->prepareWindow(0, 0,  this->canvas->getCanvasWidth(),  this->canvas->getCanvasHeight());
-    bool needRender = this->renderToCanvas();
-    if(needRender) {
-        this->canvas->render();
+    this->renderToCanvas();
+
+    for(int i = 0; i < this->alteredWindows.size(); i++) {
+        delete this->alteredWindows[i];
     }
+    this->alteredWindows.clear();
+
     return esp_timer_get_time() - start;
 }
 

@@ -157,6 +157,7 @@ public:
     std::vector<size_t> *getObjectsAt(CEPoint *point);
     size_t getObjectIndex(CEGraphicObject *obj);
     size_t getObjectsCount();
+    std::vector<CEGraphicObject *> *getObjectsOnWindow(CERenderWindow *window);
     bool renderToCanvas();
     uint64_t render();
     uint64_t loop();
@@ -164,6 +165,7 @@ public:
 private:
     CECanvas *canvas;
     std::vector<CEGraphicObject *> objects;
+    std::vector<CERenderWindow *> alteredWindows;
 };
 
 class CEActiveObject : public CEGraphicObject

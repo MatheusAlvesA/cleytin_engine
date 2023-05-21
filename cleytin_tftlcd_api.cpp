@@ -130,16 +130,16 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff, uint16_t startX, uint16_t startY,
     // Parametros do comando
     trans[1].tx_data[0] = (uint8_t)(startX >> 8);       //High byte da coordenada inicial
     trans[1].tx_data[1] = (uint8_t)(startX & 0xff);     //Low byte da coordenada inicial
-    trans[1].tx_data[2] = (uint8_t)(endX >> 8);         //High byte da coordenada final
-    trans[1].tx_data[3] = (uint8_t)(endX & 0xff);       //Low byte da coordenada final
+    trans[1].tx_data[2] = (uint8_t)((endX-1) >> 8);     //High byte da coordenada final
+    trans[1].tx_data[3] = (uint8_t)((endX-1) & 0xff);   //Low byte da coordenada final
 
     // Comando: Configurar linha
     trans[2].tx_data[0] = 0x2B;
     // Parametros do comando
     trans[3].tx_data[0] = (uint8_t)(startY >> 8);       //High byte da coordenada inicial
     trans[3].tx_data[1] = (uint8_t)(startY & 0xff);     //Low byte da coordenada inicial
-    trans[3].tx_data[2] = (uint8_t)(endY >> 8);         //High byte da coordenada final
-    trans[3].tx_data[3] = (uint8_t)(endY & 0xff);       //Low byte da coordenada final
+    trans[3].tx_data[2] = (uint8_t)((endY+1) >> 8);     //High byte da coordenada final
+    trans[3].tx_data[3] = (uint8_t)((endY+1) & 0xff);   //Low byte da coordenada final
 
     // Comando: Escrever na memoria
     trans[4].tx_data[0] = 0x2C;
