@@ -8,6 +8,9 @@ public:
     CERectangle();
     void setWidth(unsigned int w);
     void setHeight(unsigned int h);
+    void setPosX(unsigned int x);
+    void setPosY(unsigned int y);
+    void setPos(unsigned int x, unsigned int y);
     void setFilled(bool fill);
     bool getFilled();
     unsigned int getWidth();
