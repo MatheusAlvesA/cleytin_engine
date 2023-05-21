@@ -365,7 +365,41 @@ void CEGraphicObject::addCurrentWindowAsAltered()
             return;
         }
     }
+    this->addAlteredWindow(w);
+}
+
+bool CEGraphicObject::addAlteredWindow(CERenderWindow *w) {
+    if(w->topLeft->x < 0) {
+        w->topLeft->x = 0;
+        w->bottomLeft->x = 0;
+    }
+    if(w->topLeft->y < 0) {
+        w->topLeft->y = 0;
+        w->topRight->y = 0;
+    }
+    if(w->bottomRight->x > this->maxX) {
+        w->bottomRight->x = this->maxX;
+        w->topRight->x = this->maxX;
+    }
+    if(w->bottomRight->y > this->maxY) {
+        w->bottomRight->y = this->maxY;
+        w->bottomLeft->y = this->maxY;
+    }
+
+    if(
+        w->topLeft->x > this->maxX ||
+        w->topLeft->y > this->maxY ||
+        w->bottomRight->x < 0 ||
+        w->bottomRight->y < 0 ||
+        w->topLeft->x >= w->bottomRight->x ||
+        w->topLeft->y >= w->bottomRight->y
+    ) {
+        delete w;
+        return false;
+    }
+
     this->alteredWindows->push_back(w);
+    return true;
 }
 
 void CEGraphicObject::clearAlteredWindows()

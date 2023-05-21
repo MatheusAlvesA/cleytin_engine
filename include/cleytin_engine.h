@@ -140,6 +140,7 @@ protected:
     bool rotatePixel(int &x, int &y, uint16_t rot);
     void mirrorPixel(int &x);
     void addCurrentWindowAsAltered();
+    bool addAlteredWindow(CERenderWindow *w);
 };
 
 class CleytinEngine

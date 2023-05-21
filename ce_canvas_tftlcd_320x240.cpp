@@ -88,7 +88,14 @@ void CECanvasTFTLCD320x240::clear() {
 }
 
 void CECanvasTFTLCD320x240::prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY) {
-    if(endX == 0 || endY == 0 || startX > endX || startY > endY) {
+    if(
+        endX == 0 ||
+        endY == 0 ||
+        startX > endX ||
+        startY > endY ||
+        startX >= this->getCanvasWidth() ||
+        startY >= this->getCanvasHeight()
+    ) {
         return;
     }
     if(endX > this->getCanvasWidth()) {

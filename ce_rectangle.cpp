@@ -4,17 +4,48 @@ CERectangle::CERectangle() {
    this->width = 0;
    this->height = 0;
    this->filled = false;
-   this->addCurrentWindowAsAltered();
 }
 
 void CERectangle::setWidth(unsigned int w) {
+    unsigned int oldEndX = this->posX + this->width;
+    unsigned int newEndX = this->posX + w;
     this->width = w;
-    this->addCurrentWindowAsAltered();
+
+    CEPoint *start = new CEPoint(
+        (int) (oldEndX < newEndX ? oldEndX : newEndX) - 1,
+        (int) this->posY
+    );
+    CEPoint *end = new CEPoint(
+        (int) (oldEndX < newEndX ? newEndX : oldEndX) + 1,
+        (int) (this->posY + this->height)
+    );
+
+    CERenderWindow *altered = new CERenderWindow(start, end);
+    delete start;
+    delete end;
+
+    this->addAlteredWindow(altered);
 }
 
 void CERectangle::setHeight(unsigned int h) {
+    unsigned int oldEndY = this->posY + this->height;
+    unsigned int newEndY = this->posY + h;
     this->height = h;
-    this->addCurrentWindowAsAltered();
+
+    CEPoint *start = new CEPoint(
+        (int) this->posX,
+        (int) (oldEndY < newEndY ? oldEndY : newEndY) - 1
+    );
+    CEPoint *end = new CEPoint(
+        (int) (this->posX + this->width),
+        (int) (oldEndY < newEndY ? newEndY : oldEndY) + 1
+    );
+
+    CERenderWindow *altered = new CERenderWindow(start, end);
+    delete start;
+    delete end;
+
+    this->addAlteredWindow(altered);
 }
 
 unsigned int CERectangle::getWidth() {

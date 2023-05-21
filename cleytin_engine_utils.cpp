@@ -17,7 +17,10 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         for (size_t j = 0; j < list->size(); j++)
         {
             if(j == i) continue;
-            if(list->at(j)->containsWindow(candidate)) {
+            if(
+                *list->at(j) == *candidate ||
+                list->at(j)->containsWindow(candidate)
+            ) {
                 delete candidate;
                 contained = true;
                 break;
@@ -27,7 +30,10 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         // Testando se alguma janela já adicionada contém a janela candidata
         for (size_t j = 0; j < r->size(); j++)
         {
-            if(r->at(j)->containsWindow(candidate)) {
+            if(
+                *r->at(j) == *candidate ||
+                r->at(j)->containsWindow(candidate)
+            ) {
                 delete candidate;
                 contained = true;
                 break;

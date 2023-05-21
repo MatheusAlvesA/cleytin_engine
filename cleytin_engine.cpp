@@ -87,12 +87,14 @@ void CleytinEngine::clear(bool freeMemory)
         }
     }
     this->objects.clear();
-    this->alteredWindows.push_back(
-        new CERenderWindow(
-            new CEPoint(0, 0),
-            new CEPoint(this->canvas->getCanvasWidth(), this->canvas->getCanvasHeight())
-        )
-    );
+
+    CEPoint *start = new CEPoint(0, 0);
+    CEPoint *end = new CEPoint(this->canvas->getCanvasWidth(), this->canvas->getCanvasHeight());
+
+    this->alteredWindows.push_back(new CERenderWindow(start, end));
+
+    delete start;
+    delete end;
 }
 
 std::vector<size_t> *CleytinEngine::getObjectsAt(CEPoint *point)
@@ -200,11 +202,14 @@ bool CleytinEngine::renderToCanvas()
     std::vector<CERenderWindow *> *optimizedAlteredWindows = optimize_container_windows(alteredWindows);
     delete_pointers_vector<CERenderWindow>(alteredWindows);
 
+    //printf("Optimized altered windows: %d\n", optimizedAlteredWindows->size());
     for (size_t i = 0; i < optimizedAlteredWindows->size(); i++)
     {
         CERenderWindow *w = optimizedAlteredWindows->at(i);
         if(w->topLeft->x < 0) w->topLeft->x = 0;
         if(w->topLeft->y < 0) w->topLeft->y = 0;
+
+        //printf("Rendering window: %d, %d | %d, %d\n", w->topLeft->x, w->topLeft->y, w->topRight->x, w->topRight->y);
 
         this->canvas->prepareWindow(
             w->topLeft->x,
