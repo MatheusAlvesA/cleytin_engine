@@ -19,11 +19,7 @@ unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
 {
     this->objects.push_back(obj);
     std::sort(this->objects.begin(), this->objects.end(), compareObjectPriority);
-    CEActiveObject *aObj = dynamic_cast<CEActiveObject *>(obj);
-    if (aObj)
-    {
-        aObj->setup(this);
-    }
+    obj->setup(this);
     return (unsigned int)this->objects.size();
 }
 
@@ -233,11 +229,7 @@ uint64_t CleytinEngine::render()
     uint64_t start = esp_timer_get_time();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
-        CEActiveObject *obj = dynamic_cast<CEActiveObject *>(this->objects[i]);
-        if (obj)
-        {
-            obj->beforeRender(this);
-        }
+        this->objects[i]->beforeRender(this);
     }
     
     this->renderToCanvas();
@@ -255,19 +247,11 @@ uint64_t CleytinEngine::loop()
     uint64_t start = esp_timer_get_time();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
-        CEActiveObject *obj = dynamic_cast<CEActiveObject *>(this->objects[i]);
-        if (obj)
-        {
-            obj->beforeLoop(this);
-        }
+        this->objects[i]->beforeLoop(this);
     }
     for (size_t i = 0; i < this->objects.size(); i++)
     {
-        CEActiveObject *obj = dynamic_cast<CEActiveObject *>(this->objects[i]);
-        if (obj)
-        {
-            obj->loop(this);
-        }
+        this->objects[i]->loop(this);
     }
     uint64_t end = esp_timer_get_time();
     return end - start;

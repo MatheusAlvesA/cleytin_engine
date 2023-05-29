@@ -410,3 +410,8 @@ void CEGraphicObject::clearAlteredWindows()
     }
     this->alteredWindows->clear();
 }
+
+void CEGraphicObject::setup(CleytinEngine *engine) {/* EMPTY */}
+void CEGraphicObject::beforeLoop(CleytinEngine *engine) {/* EMPTY */}
+void CEGraphicObject::loop(CleytinEngine *engine) {/* EMPTY */}
+void CEGraphicObject::beforeRender(CleytinEngine *engine) {/* EMPTY */}
