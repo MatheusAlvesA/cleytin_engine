@@ -6,14 +6,13 @@
 class CEBitmap : public CEGraphicObject {
 public:
     CEBitmap();
-    ~CEBitmap();
     void setWidth(unsigned int w);
     void setHeight(unsigned int h);
-    void setBuffer(uint8_t *buffer);
+    void setBuffer(const uint8_t *buffer);
     void setSizeMultiplier(uint8_t size);
     unsigned int getWidth();
     unsigned int getHeight();
-    uint8_t *getBuffer();
+    const uint8_t *getBuffer();
     uint8_t getSizeMultiplier();
 
     CERenderWindow* getRenderWindow();
@@ -22,7 +21,7 @@ public:
 protected:
     unsigned int width;
     unsigned int height;
-    uint8_t *buffer;
+    const uint8_t *buffer;
     uint8_t sizeMultiplier;
 };
 

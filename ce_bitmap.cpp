@@ -8,10 +8,6 @@ CEBitmap::CEBitmap() {
    this->addCurrentWindowAsAltered();
 }
 
-CEBitmap::~CEBitmap() {
-   delete this->buffer;
-}
-
 void CEBitmap::setWidth(unsigned int w) {
     this->width = w;
     this->addCurrentWindowAsAltered();
@@ -49,12 +45,12 @@ CERenderWindow* CEBitmap::getRenderWindow() {
     return window;
 }
 
-void CEBitmap::setBuffer(uint8_t *buffer) {
+void CEBitmap::setBuffer(const uint8_t *buffer) {
     this->buffer = buffer;
     this->addCurrentWindowAsAltered();
 }
 
-uint8_t *CEBitmap::getBuffer() {
+const uint8_t *CEBitmap::getBuffer() {
     return this->buffer;
 }
 
