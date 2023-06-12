@@ -6,16 +6,15 @@
 class CEColorfulBitmap : public CEGraphicObject {
 public:
     CEColorfulBitmap();
-    ~CEColorfulBitmap();
     void setWidth(unsigned int w);
     void setHeight(unsigned int h);
-    void setBuffer(uint16_t *buffer);
+    void setBuffer(const uint16_t *buffer);
     void setSizeMultiplier(uint8_t size);
     unsigned int getWidth();
     void setAlphaColor(uint16_t color);
     unsigned int getHeight();
     uint16_t getAlphaColor();
-    uint16_t *getBuffer();
+    const uint16_t *getBuffer();
     uint8_t getSizeMultiplier();
 
     CERenderWindow* getRenderWindow();
@@ -24,11 +23,9 @@ public:
 protected:
     unsigned int width;
     unsigned int height;
-    uint16_t *buffer;
+    const uint16_t *buffer;
     uint16_t alphaColor;
     uint8_t sizeMultiplier;
-
-    CEColor rgb565ToColor(const uint16_t raw);
 };
 
 #endif

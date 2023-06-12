@@ -270,6 +270,35 @@ bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color)
     return true;
 }
 
+bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, uint16_t color)
+{
+    if (this->getMirrored())
+    {
+        this->mirrorPixel(x);
+    }
+    if (!this->rotatePixel(x, y, this->getRotation()))
+    {
+        return false;
+    }
+    if (x < 0 || y < 0)
+    {
+        return false;
+    }
+    unsigned int posX = (unsigned int)x;
+    unsigned int posY = (unsigned int)y;
+
+    if (this->getNegative())
+    {
+        CEColor colorStruct = RGB565ToColor(color);
+        colorStruct = -colorStruct;
+        canvas->setPixel(posX, posY, colorStruct);
+    } else {
+        canvas->setPixel(posX, posY, color);
+    }
+
+    return true;
+}
+
 bool CEGraphicObject::containsPoint(CEPoint *point, unsigned int expand)
 {
     CERenderWindow *w = this->getRenderWindow();

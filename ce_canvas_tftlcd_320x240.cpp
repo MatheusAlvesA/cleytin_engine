@@ -15,6 +15,10 @@ CECanvasTFTLCD320x240::~CECanvasTFTLCD320x240() {
 }
 
 bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, const CEColor color) {
+    return this->setPixel(x, y, colorToRGB565(color));
+}
+
+bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, uint16_t color) {
     if(x >= this->endX || y >= this->endY || x < this->startX || y < this->startY) {
         return false;
     }
@@ -22,25 +26,12 @@ bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, const CECol
     x -= this->startX;
     y -= this->startY;
     uint16_t width = this->endX - this->startX;
-    this->frameBuffer[y * width + x] = this->color2rgb565(color);
+    this->frameBuffer[y * width + x] = color;
     return true;
 }
 
 bool CECanvasTFTLCD320x240::clearPixel(unsigned int x, unsigned int y) {
     return this->setPixel(x, y, this->getBackgroundColor());
-}
-
-uint16_t CECanvasTFTLCD320x240::color2rgb565(const CEColor color) {
-    uint8_t high = 0;
-    uint8_t low  = 0;
-
-    high = color.red & 0b11111000;                   // Primeiros 5 bits são o vermelho
-    high |= color.green >> 5;                        // Bits 6 até 8 são os primeiros 3 bits do verde
-    low  = (color.green & 0b11111100) << 3;          // Bits 9 até 11 sãos os últimos 3 bits do verde
-    low  |= color.blue  >> 3;                        // Bits 12 até 16 são o azul
-
-    // É necessário inverter os bytes pois a tela funciona em big endian
-    return (uint16_t) ((((uint16_t) low) << 8) | high);
 }
 
 unsigned int CECanvasTFTLCD320x240::getCanvasWidth() {

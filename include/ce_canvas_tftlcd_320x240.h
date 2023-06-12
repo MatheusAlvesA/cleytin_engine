@@ -16,6 +16,7 @@ public:
     unsigned int getCanvasWidth();
     unsigned int getCanvasHeight();
     bool setPixel(unsigned int x, unsigned int y, const CEColor color);
+    bool setPixel(unsigned int x, unsigned int y, uint16_t color);
     bool clearPixel(unsigned int x, unsigned int y);
     bool render();
     void clear();
@@ -28,8 +29,6 @@ private:
     uint16_t startY;
     uint16_t endX;
     uint16_t endY;
-
-    uint16_t color2rgb565(const CEColor color);
 };
 
 #endif

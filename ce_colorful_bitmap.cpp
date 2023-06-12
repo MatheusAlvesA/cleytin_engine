@@ -10,11 +10,6 @@ CEColorfulBitmap::CEColorfulBitmap()
     this->addCurrentWindowAsAltered();
 }
 
-CEColorfulBitmap::~CEColorfulBitmap()
-{
-    delete this->buffer;
-}
-
 void CEColorfulBitmap::setWidth(unsigned int w)
 {
     this->width = w;
@@ -70,13 +65,13 @@ CERenderWindow *CEColorfulBitmap::getRenderWindow()
     return window;
 }
 
-void CEColorfulBitmap::setBuffer(uint16_t *buffer)
+void CEColorfulBitmap::setBuffer(const uint16_t *buffer)
 {
     this->buffer = buffer;
     this->addCurrentWindowAsAltered();
 }
 
-uint16_t *CEColorfulBitmap::getBuffer()
+const uint16_t *CEColorfulBitmap::getBuffer()
 {
     return this->buffer;
 }
@@ -102,14 +97,16 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window)
             {
                 for (size_t j = 0; j < this->getSizeMultiplier(); j++)
                 {
+                    if(this->buffer[index] == this->alphaColor) {
+                        continue;
+                    }
                     if (
                         !this->setPixel(
                             canvas,
                             i + cursorX,
                             j + cursorY,
-                            (this->buffer[index] != this->alphaColor)
-                                ? this->rgb565ToColor(this->buffer[index])
-                                : canvas->getBackgroundColor()))
+                            this->buffer[index]
+                        ))
                     {
                         allPixelsRendered = false;
                     }
@@ -123,15 +120,4 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window)
     }
 
     return allPixelsRendered;
-}
-
-CEColor CEColorfulBitmap::rgb565ToColor(const uint16_t raw)
-{
-    CEColor r = {0, 0, 0};
-
-    r.red = (uint8_t)((raw >> 11) << 3);  // Primeiros 5 bits são o vermelho
-    r.green = (uint8_t)((raw >> 5) << 2); // Bits 6 até 11 são o verde
-    r.blue = (uint8_t)(raw << 3);         // Bits 12 até 16 são o azul
-
-    return r;
 }

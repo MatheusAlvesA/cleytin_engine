@@ -25,6 +25,8 @@ struct CEColor {
     }
 };
 
+CEColor RGB565ToColor(uint16_t raw);
+uint16_t colorToRGB565(const CEColor color);
 
 class CECanvas {
 public:
@@ -34,6 +36,7 @@ public:
     virtual unsigned int getCanvasWidth() = 0;
     virtual unsigned int getCanvasHeight() = 0;
     virtual bool setPixel(unsigned int x, unsigned int y, const CEColor color) = 0;
+    virtual bool setPixel(unsigned int x, unsigned int y, uint16_t color) = 0;
     virtual bool clearPixel(unsigned int x, unsigned int y) = 0;
     virtual bool render() = 0;
     virtual void clear() = 0;
