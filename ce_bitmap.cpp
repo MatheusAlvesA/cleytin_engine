@@ -6,6 +6,16 @@ CEBitmap::CEBitmap() {
    this->sizeMultiplier = 1;
    this->buffer = NULL;
    this->addCurrentWindowAsAltered();
+   this->transparent = false;
+}
+
+void CEBitmap::setTransparent(bool transparent) {
+    this->transparent = transparent;
+    this->addCurrentWindowAsAltered();
+}
+
+bool CEBitmap::isTransparent() {
+    return this->transparent;
 }
 
 void CEBitmap::setWidth(unsigned int w) {
@@ -73,14 +83,16 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
             unsigned int bitOffset = bitPos % 8;
             for (size_t i = 0; i < this->getSizeMultiplier(); i++) {
                 for (size_t j = 0; j < this->getSizeMultiplier(); j++) {
+                    bool bitSet = (bool) (this->buffer[bytePos] & (1 << (7 - bitOffset)));
+                    if(!bitSet && this->transparent) {
+                        continue;
+                    }
                     if(
                         !this->setPixel(
                             canvas,
                             i + cursorX,
                             j + cursorY,
-                            (this->buffer[bytePos] & (1 << (7 - bitOffset)))
-                                ? this->getBaseColor()
-                                : canvas->getBackgroundColor()
+                            bitSet ? this->getBaseColor() : canvas->getBackgroundColor()
                         )
                     ) {
                         allPixelRendered = false;
