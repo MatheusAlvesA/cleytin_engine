@@ -178,11 +178,67 @@ std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow
     return r;
 }
 
+void remove_intersection(CERenderWindow *main, CERenderWindow *candidate) {
+        CEWindowIntersectionSide side = main->getIntersectionSide(candidate);
+        switch (side)
+        {
+        case CEWindowIntersectionSide::TOP:
+            candidate->topRight->y = candidate->topLeft->y = main->bottomLeft->y + 1;
+            break;
+        case CEWindowIntersectionSide::BOTTOM:
+            candidate->bottomRight->y = candidate->bottomLeft->y = main->topLeft->y - 1;
+            break;
+        case CEWindowIntersectionSide::LEFT:
+            candidate->topLeft->x = candidate->bottomLeft->x = main->topRight->x + 1;
+            break;
+        case CEWindowIntersectionSide::RIGHT:
+            candidate->topRight->x = candidate->bottomRight->x = main->topLeft->x - 1;
+            break;
+        
+        default:
+            break;
+        }
+}
+
+std::vector<CERenderWindow *> *remove_intersections(std::vector<CERenderWindow *> *list) {
+    std::vector<CERenderWindow *> *r = new std::vector<CERenderWindow *>();
+
+    if(list->size() <= 0) return r;
+
+    std::vector<size_t> *invalidIndexes = new std::vector<size_t>();
+
+    for (size_t i = 0; i < list->size(); i++) {
+        CERenderWindow *candidate = list->at(i);
+        for (size_t j = 0; j < list->size(); j++)
+        {
+            if(j == i || in_array<size_t>(j, invalidIndexes)) continue;
+
+            remove_intersection(list->at(j), candidate);
+            if(
+                candidate->topLeft->x > candidate->bottomRight->x ||
+                candidate->topLeft->y > candidate->bottomRight->y
+            ) {
+                invalidIndexes->push_back(i);
+                break;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < list->size(); i++) {
+        if(in_array<size_t>(i, invalidIndexes)) continue;
+        r->push_back(list->at(i)->clone());
+    }
+
+    delete invalidIndexes;
+    return r;
+}
+
 std::vector<CERenderWindow *> *optimize_container_windows(std::vector<CERenderWindow *> *list) {
     std::vector<CERenderWindow *> *stage1 = remove_sub_container_windows(list);
     std::vector<CERenderWindow *> *stage2 = fuse_container_windows(stage1);
-    //TODO otimizar removendo interseções
+    std::vector<CERenderWindow *> *stage3 = remove_intersections(stage2);
 
     delete_pointers_vector<CERenderWindow>(stage1);
-    return stage2;
+    delete_pointers_vector<CERenderWindow>(stage2);
+    return stage3;
 }

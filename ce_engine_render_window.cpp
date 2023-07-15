@@ -60,6 +60,29 @@ bool CERenderWindow::isZeroSize() {
     return r;
 }
 
+/**
+ * @brief Assumindo que ambas as janelas não foram rotacionadas, esse método retorna se a janela passada tem interseção
+ * com a janela atual.
+ * 
+ * @param window
+ * @return CEWindowIntersectionSide
+*/
+CEWindowIntersectionSide CERenderWindow::getIntersectionSide(CERenderWindow *window) {
+    if(this->containsPoint(window->topLeft) && this->containsPoint(window->topRight)) {
+        return CEWindowIntersectionSide::TOP;
+    }
+    if(this->containsPoint(window->bottomLeft) && this->containsPoint(window->bottomRight)) {
+        return CEWindowIntersectionSide::BOTTOM;
+    }
+    if(this->containsPoint(window->topLeft) && this->containsPoint(window->bottomLeft)) {
+        return CEWindowIntersectionSide::LEFT;
+    }
+    if(this->containsPoint(window->topRight) && this->containsPoint(window->bottomRight)) {
+        return CEWindowIntersectionSide::RIGHT;
+    }
+    return CEWindowIntersectionSide::NONE;
+}
+
 void CERenderWindow::setPoints(const CEPoint *start, const CEPoint *end)
 {
     if (this->topLeft)

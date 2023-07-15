@@ -11,6 +11,15 @@
 
 #define PI 3.142857
 
+typedef enum CEWindowIntersectionSide
+{
+    TOP    = 1,
+    BOTTOM = -1,
+    NONE   = 0,
+    LEFT   = -2,
+    RIGHT  = 2
+} CEWindowIntersectionSide;
+
 class CEPoint
 {
 public:
@@ -71,6 +80,8 @@ public:
     void resetToStartPosition();
 
     bool isZeroSize();
+
+    CEWindowIntersectionSide getIntersectionSide(CERenderWindow *line);
 
     bool operator==(const CERenderWindow &window);
     bool operator!=(const CERenderWindow &window);
