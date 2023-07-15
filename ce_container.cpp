@@ -320,7 +320,7 @@ void CEContainer::positionObjectRow(CEGraphicObject *obj, CERenderWindow *w, siz
     }
 }
 
-bool CEContainer::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEContainer::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     bool r = true;
     unsigned int bkpX = 0;
     unsigned int bkpY = 0;
@@ -337,7 +337,7 @@ bool CEContainer::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
         obj->setMaxX(maxX);
         obj->setMaxY(maxY);
         this->positionObject(obj, window, spaceXLeft, spaceYLeft, offsetX, offsetY);
-        if(!obj->renderToCanvas(canvas)) {
+        if(!obj->renderToCanvas(canvas, subWindow)) {
             r = false;
         }
         obj->setPos(bkpX, bkpY);

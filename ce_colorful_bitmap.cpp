@@ -76,12 +76,12 @@ const uint16_t *CEColorfulBitmap::getBuffer()
     return this->buffer;
 }
 
-bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window)
+bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
-    int startX = window->topLeft->x;
-    int startY = window->topLeft->y;
-    int endX = window->bottomRight->x;
-    int endY = window->bottomRight->y;
+    int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
+    int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
+    int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
+    int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
 
     unsigned int cursorY = startY;
     unsigned int internalCursorY = 0;

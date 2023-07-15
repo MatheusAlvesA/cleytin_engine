@@ -119,7 +119,7 @@ bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y
     return r;
 }
 
-bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     CERenderWindow *w = this->getRenderWindow();
     unsigned int startX = w->topLeft->x;
     unsigned int cursorX = startX;

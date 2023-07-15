@@ -18,7 +18,7 @@ public:
     uint8_t getSizeMultiplier();
 
     CERenderWindow* getRenderWindow();
-    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
+    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     unsigned int width;

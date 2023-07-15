@@ -216,21 +216,21 @@ CERenderWindow* CEMenuHelper::getRenderWindow() {
     return window;
 }
 
-bool CEMenuHelper::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEMenuHelper::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     bool r = true;
-    if(!this->renderOptionsToCanvas(canvas, window)) {
+    if(!this->renderOptionsToCanvas(canvas, window, subWindow)) {
         r = false;
     }
-    if(!this->renderMenuTitleToCanvas(canvas, window)) {
+    if(!this->renderMenuTitleToCanvas(canvas, window, subWindow)) {
         r = false;
     }
-    if(!this->renderMenuInfoToCanvas(canvas, window)) {
+    if(!this->renderMenuInfoToCanvas(canvas, window, subWindow)) {
         r = false;
     }
     return r;
 }
 
-bool CEMenuHelper::renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEMenuHelper::renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     size_t maxItems = this->getMaxItemsOnCanvas();
     CEContainer *c = new CEContainer();
     c->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
@@ -258,7 +258,7 @@ bool CEMenuHelper::renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *windo
         }
         c->addObject(txt);
     }
-    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas);
+    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas, subWindow);
     delete c;
     return r;
 }
@@ -271,7 +271,7 @@ unsigned int CEMenuHelper::getOptionHeight() {
     return r;
 }
 
-bool CEMenuHelper::renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEMenuHelper::renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     if(this->getTitle() == NULL) {
         return true;
     }
@@ -296,8 +296,8 @@ bool CEMenuHelper::renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *win
     txt->setBaseColor(this->getBaseColor());
     cTitle->addObject(txt);
 
-    bool rTitle = ((CEGraphicObject *)cTitle)->renderToCanvas(canvas);
-    bool rRect = ((CEGraphicObject *)rect)->renderToCanvas(canvas);
+    bool rTitle = ((CEGraphicObject *)cTitle)->renderToCanvas(canvas, subWindow);
+    bool rRect = ((CEGraphicObject *)rect)->renderToCanvas(canvas, subWindow);
     delete cTitle;
     delete rect;
     return rTitle && rRect;
@@ -311,7 +311,7 @@ size_t CEMenuHelper::getMaxItemsOnCanvas() {
     return optionsAvailableHeight / this->getOptionHeight();
 }
 
-bool CEMenuHelper::renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window) {
+bool CEMenuHelper::renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     size_t maxItems = this->getMaxItemsOnCanvas();
     CEContainer *c = new CEContainer();
     c->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
@@ -363,7 +363,7 @@ bool CEMenuHelper::renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *wind
         c->addObject(placeholder);
     }
 
-    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas);
+    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas, subWindow);
     delete c;
     return r;
 }

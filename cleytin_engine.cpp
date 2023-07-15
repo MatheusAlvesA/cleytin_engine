@@ -214,7 +214,7 @@ bool CleytinEngine::renderToCanvas()
         std::vector<CEGraphicObject *> *objs = this->getObjectsOnWindow(w);
         for (size_t i = 0; i < objs->size(); i++)
         {
-            objs->at(i)->renderToCanvas(this->canvas);
+            objs->at(i)->renderToCanvas(this->canvas, w);
         }
         delete objs;
         this->canvas->render();

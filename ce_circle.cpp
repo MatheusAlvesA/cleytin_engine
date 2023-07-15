@@ -50,12 +50,12 @@ uint16_t CECircle::getRotation()
     return 0;
 }
 
-bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window)
+bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
-    int startX = window->topLeft->x;
-    int startY = window->topLeft->y;
-    int endX = window->bottomRight->x;
-    int endY = window->bottomRight->y;
+    int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
+    int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
+    int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
+    int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
     CEPoint *center = window->getCenterPoint();
 
     int cursorY = startY;
