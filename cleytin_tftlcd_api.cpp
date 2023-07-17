@@ -89,7 +89,7 @@ void CleytinTFTAPI::lcdInit() {
 
     //Detetando tipo de LCD
     uint32_t lcd_id = this->getLcdId();
-    printf("LCD ID: %d\n", lcd_id);
+    printf("LCD ID: %lu\n", lcd_id);
     if (lcd_id == 0) {
         //zero, ili
         lcd_init_cmds = ili_init_cmds;
@@ -103,7 +103,7 @@ void CleytinTFTAPI::lcdInit() {
         this->sendCmd(lcd_init_cmds[i].cmd);
         this->sendData(lcd_init_cmds[i].data, lcd_init_cmds[i].sizeData);
         if (lcd_init_cmds[i].sizeData & 0x80) { // Se o comando exige pausa antes de continuar
-            vTaskDelay(100 / portTICK_RATE_MS);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
         }
         i++;
     }

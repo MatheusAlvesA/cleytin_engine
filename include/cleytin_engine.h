@@ -6,6 +6,7 @@
 #include "esp_system.h"
 #include "ce_canvas_tftlcd_320x240.h"
 #include "ce_graphic_object.h"
+#include "esp_timer.h"
 
 #include <math.h>
 
