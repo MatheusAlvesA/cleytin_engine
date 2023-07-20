@@ -4,6 +4,7 @@
 #include "cleytin_engine.fwd.h"
 #include "ce_canvas.h"
 #include <vector>
+#include <stddef.h>
 
 class CEGraphicObject
 {

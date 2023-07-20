@@ -19,6 +19,7 @@ idf_component_register(SRCS
                             "ce_canvas_tftlcd_320x240.cpp"
                             "cleytin_sdcard.cpp"
                             "ce_colorful_bitmap.cpp"
+                            "ce_move_controls.cpp"
                             "animations/ce_animation.cpp"
                             "animations/ce_linear_move_animation.cpp"
                     INCLUDE_DIRS "include" "include/animations"
