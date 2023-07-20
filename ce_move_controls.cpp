@@ -15,6 +15,9 @@ bool CEMoveControls::moveUp(CEGraphicObject *object) {
         this->stop();
         return false;
     }
+    if(pixelsToMove == 0) {
+        return false;
+    }
     object->setPosY(object->getPosY() - pixelsToMove);
     this->lastMoveTime = esp_timer_get_time();
     return true;
@@ -27,6 +30,9 @@ bool CEMoveControls::moveUpLeft(CEGraphicObject *object) {
         pixelsToMove > object->getPosX()
     ) { // Tentando mover para fora da tela
         this->stop();
+        return false;
+    }
+    if(pixelsToMove == 0) {
         return false;
     }
     object->setPos(object->getPosX() - pixelsToMove, object->getPosY() - pixelsToMove);
@@ -44,6 +50,9 @@ bool CEMoveControls::moveDownLeft(CEGraphicObject *object) {
         newPosY > maxY
     ) { // Tentando mover para fora da tela
         this->stop();
+        return false;
+    }
+    if(pixelsToMove == 0) {
         return false;
     }
     object->setPos(object->getPosX() - pixelsToMove, newPosY);
@@ -65,6 +74,9 @@ bool CEMoveControls::moveDownRight(CEGraphicObject *object) {
         this->stop();
         return false;
     }
+    if(pixelsToMove == 0) {
+        return false;
+    }
     object->setPos(newPosX, newPosY);
     this->lastMoveTime = esp_timer_get_time();
     return true;
@@ -81,17 +93,24 @@ bool CEMoveControls::moveUpRight(CEGraphicObject *object) {
         this->stop();
         return false;
     }
+    if(pixelsToMove == 0) {
+        return false;
+    }
     object->setPos(newPosX, object->getPosY() - pixelsToMove);
     this->lastMoveTime = esp_timer_get_time();
     return true;
 }
 
 bool CEMoveControls::moveDown(CEGraphicObject *object) {
+    unsigned int pixelsToMove = this->calculatePixelsToMove();
     unsigned int maxY = object->getMaxY() - object->getRenderWindowHeight();
-    unsigned int newPosY = object->getPosY() + this->calculatePixelsToMove();
+    unsigned int newPosY = object->getPosY() + pixelsToMove;
 
     if(newPosY > maxY) { // Tentando mover para fora da tela
         this->stop();
+        return false;
+    }
+    if(pixelsToMove == 0) {
         return false;
     }
     object->setPosY(newPosY);
@@ -105,17 +124,24 @@ bool CEMoveControls::moveLeft(CEGraphicObject *object) {
         this->stop();
         return false;
     }
+    if(pixelsToMove == 0) {
+        return false;
+    }
     object->setPosX(object->getPosX() - pixelsToMove);
     this->lastMoveTime = esp_timer_get_time();
     return true;
 }
 
 bool CEMoveControls::moveRight(CEGraphicObject *object) {
+    unsigned int pixelsToMove = this->calculatePixelsToMove();
     unsigned int maxX = object->getMaxX() - object->getRenderWindowWidth();
-    unsigned int newPosX = object->getPosX() + this->calculatePixelsToMove();
+    unsigned int newPosX = object->getPosX() + pixelsToMove;
 
     if(newPosX > maxX) { // Tentando mover para fora da tela
         this->stop();
+        return false;
+    }
+    if(pixelsToMove == 0) {
         return false;
     }
     object->setPosX(newPosX);
@@ -128,8 +154,8 @@ unsigned int CEMoveControls::calculatePixelsToMove() {
         this->lastMoveTime = esp_timer_get_time();
     }
     uint64_t elapsedMicroseconds = esp_timer_get_time() - this->lastMoveTime;
-    uint64_t pixelsPerMicrosecond = ((uint64_t) this->pixelsPerSecond) * 1000 * 1000;
-    uint64_t pixelsToMove = (pixelsPerMicrosecond + elapsedMicroseconds) / pixelsPerMicrosecond;
+    uint64_t microsecondsPerPixel = (1000 * 1000) / this->pixelsPerSecond; // Quantos microsegundos para mover um pixel
+    uint64_t pixelsToMove = elapsedMicroseconds / microsecondsPerPixel;
 
     return (unsigned int) pixelsToMove;
 }
