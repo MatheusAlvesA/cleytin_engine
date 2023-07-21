@@ -4,7 +4,6 @@
 CleytinEngine::CleytinEngine()
 {
     this->canvas = new CECanvasTFTLCD320x240();
-    this->canvas->render();
 }
 
 CleytinEngine::~CleytinEngine()

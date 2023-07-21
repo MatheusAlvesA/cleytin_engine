@@ -141,11 +141,16 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff, uint16_t startX, uint16_t startY,
     trans[3].tx_data[2] = (uint8_t)((endY+1) >> 8);     //High byte da coordenada final
     trans[3].tx_data[3] = (uint8_t)((endY+1) & 0xff);   //Low byte da coordenada final
 
+    unsigned int width = endX - startX;
+    width = width == 0 ? 1 : width;
+    unsigned int height = endY - startY;
+    height = height == 0 ? 1 : height;
+
     // Comando: Escrever na memoria
     trans[4].tx_data[0] = 0x2C;
     // Parametro do comando, o buffer de pixels
     trans[5].tx_buffer = buff;
-    trans[5].length = (endX - startX) * (endY - startY) * 16;
+    trans[5].length = width * height * 16;
     trans[5].flags = 0;
 
     //Enfileirando todas as transações
