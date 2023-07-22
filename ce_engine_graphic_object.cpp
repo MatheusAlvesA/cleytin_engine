@@ -56,14 +56,14 @@ void CEGraphicObject::setPriority(unsigned int priority)
     this->addCurrentWindowAsAltered();
 }
 
-void CEGraphicObject::setPosX(unsigned int posX)
+void CEGraphicObject::setPosX(int posX)
 {
     this->addCurrentWindowAsAltered();
     this->posX = posX;
     this->addCurrentWindowAsAltered();
 }
 
-void CEGraphicObject::setPosY(unsigned int posY)
+void CEGraphicObject::setPosY(int posY)
 {
     this->addCurrentWindowAsAltered();
     this->posY = posY;
@@ -98,7 +98,7 @@ void CEGraphicObject::setRotation(uint16_t rotation)
     this->addCurrentWindowAsAltered();
 }
 
-void CEGraphicObject::setPos(unsigned int x, unsigned int y)
+void CEGraphicObject::setPos(int x, int y)
 {
     this->addCurrentWindowAsAltered();
     this->posX = x;
@@ -154,12 +154,12 @@ unsigned int CEGraphicObject::getPriority()
     return this->priority;
 }
 
-unsigned int CEGraphicObject::getPosX()
+int CEGraphicObject::getPosX()
 {
     return this->posX;
 }
 
-unsigned int CEGraphicObject::getPosY()
+int CEGraphicObject::getPosY()
 {
     return this->posY;
 }
@@ -444,3 +444,4 @@ void CEGraphicObject::setup(CleytinEngine *engine) {/* EMPTY */}
 void CEGraphicObject::beforeLoop(CleytinEngine *engine) {/* EMPTY */}
 void CEGraphicObject::loop(CleytinEngine *engine) {/* EMPTY */}
 void CEGraphicObject::beforeRender(CleytinEngine *engine) {/* EMPTY */}
+void CEGraphicObject::beforeRemove(CleytinEngine *engine) {/* EMPTY */}

@@ -24,11 +24,11 @@ public:
     virtual void setNegative(bool negative);
     virtual void setColisionEnabled(bool enabled);
     virtual void setPriority(unsigned int priority);
-    virtual void setPosX(unsigned int x);
-    virtual void setPosY(unsigned int y);
+    virtual void setPosX(int x);
+    virtual void setPosY(int y);
     virtual void setMaxX(unsigned int x);
     virtual void setMaxY(unsigned int y);
-    virtual void setPos(unsigned int x, unsigned int y);
+    virtual void setPos(int x, int y);
     virtual void setRotation(uint16_t rotation);
     virtual void setBaseColor(const CEColor color);
     // Getters
@@ -37,8 +37,8 @@ public:
     virtual bool getNegative();
     virtual bool getColisionEnabled();
     virtual unsigned int getPriority();
-    virtual unsigned int getPosX();
-    virtual unsigned int getPosY();
+    virtual int getPosX();
+    virtual int getPosY();
     virtual unsigned int getMaxX();
     virtual unsigned int getMaxY();
     virtual CEColor getBaseColor();
@@ -53,6 +53,7 @@ public:
     virtual void beforeLoop(CleytinEngine *engine);
     virtual void loop(CleytinEngine *engine);
     virtual void beforeRender(CleytinEngine *engine);
+    virtual void beforeRemove(CleytinEngine *engine);
 
 protected:
     bool visible;
@@ -60,8 +61,8 @@ protected:
     bool mirrored;
     bool negative;
     unsigned int priority;
-    unsigned int posX;
-    unsigned int posY;
+    int posX;
+    int posY;
     unsigned int maxX;
     unsigned int maxY;
     uint16_t rotation;

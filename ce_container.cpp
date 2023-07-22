@@ -120,8 +120,8 @@ void CEContainer::setAlignY(CEAlign align) {
 
 CERenderWindow* CEContainer::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
-    CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
-    CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint(this->posX + (int) this->width, this->posY + (int) this->height);
     window->setPoints(start, end);
     delete start;
     delete end;
@@ -322,8 +322,8 @@ void CEContainer::positionObjectRow(CEGraphicObject *obj, CERenderWindow *w, siz
 
 bool CEContainer::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     bool r = true;
-    unsigned int bkpX = 0;
-    unsigned int bkpY = 0;
+    int bkpX = 0;
+    int bkpY = 0;
     uint maxX = window->bottomRight->x;
     uint maxY = window->bottomRight->y;
     uint offsetX = window->topLeft->x;

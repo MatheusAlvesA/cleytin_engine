@@ -6,6 +6,7 @@
 class CEAnimation {
 public:
     CEAnimation();
+    virtual ~CEAnimation();
     virtual void start() = 0;
     virtual void stop() = 0;
     virtual void loop() = 0;

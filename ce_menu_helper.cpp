@@ -208,8 +208,8 @@ void CEMenuHelper::moveCursorUp() {
 
 CERenderWindow* CEMenuHelper::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
-    CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
-    CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint(this->posX + (int) this->width, this->posY + (int) this->height);
     window->setPoints(start, end);
     delete start;
     delete end;

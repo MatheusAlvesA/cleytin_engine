@@ -19,22 +19,24 @@ unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
     this->objects.push_back(obj);
     std::sort(this->objects.begin(), this->objects.end(), compareObjectPriority);
     obj->setup(this);
-    return (unsigned int)this->objects.size();
+    return (unsigned int) this->objects.size();
+}
+
+void CleytinEngine::deleteMarkedObjects() {
+    for(int i = 0; i < this->toDeleteIndexes.size(); i++) {
+        this->removeObjectAt(this->toDeleteIndexes[i], true);
+    }
+    this->toDeleteIndexes.clear();
+}
+
+void CleytinEngine::markToDelete(CEGraphicObject *obj)
+{
+    return this->toDeleteIndexes.push_back(this->getObjectIndex(obj));
 }
 
 bool CleytinEngine::removeObject(CEGraphicObject *obj, bool freeMemory)
 {
-    size_t index = this->objects.size();
-    for (size_t i = 0; i < this->objects.size(); i++)
-    {
-        if (this->objects[i] == obj)
-        {
-            index = i;
-            break;
-        }
-    }
-
-    return this->removeObjectAt(index, freeMemory);
+    return this->removeObjectAt(this->getObjectIndex(obj), freeMemory);
 }
 
 bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory)
@@ -46,6 +48,7 @@ bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory)
 
     this->alteredWindows.push_back(this->objects[index]->getContainingWindow()->clone());
 
+    this->objects[index]->beforeRemove(this);
     if (freeMemory)
     {
         delete this->objects[index];
@@ -74,10 +77,10 @@ size_t CleytinEngine::getObjectIndex(CEGraphicObject *obj)
 
 void CleytinEngine::clear(bool freeMemory)
 {
-    if (freeMemory)
+    for (size_t i = 0; i < this->objects.size(); i++)
     {
-        for (size_t i = 0; i < this->objects.size(); i++)
-        {
+        this->objects[i]->beforeRemove(this);
+        if (freeMemory) {
             delete this->objects[i];
         }
     }
@@ -244,6 +247,7 @@ uint64_t CleytinEngine::render()
 uint64_t CleytinEngine::loop()
 {
     uint64_t start = esp_timer_get_time();
+    this->deleteMarkedObjects();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         this->objects[i]->beforeLoop(this);

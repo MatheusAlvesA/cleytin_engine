@@ -57,8 +57,8 @@ uint16_t CEColorfulBitmap::getAlphaColor()
 CERenderWindow *CEColorfulBitmap::getRenderWindow()
 {
     CERenderWindow *window = this->getDefaultRenderWindow();
-    CEPoint *start = new CEPoint((int)this->posX, (int)this->posY);
-    CEPoint *end = new CEPoint((int)(this->posX + this->getWidth()), (int)(this->posY + this->getHeight()));
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint(this->posX + (int)this->getWidth(), this->posY + (int)this->getHeight());
     window->setPoints(start, end);
     delete start;
     delete end;
@@ -83,12 +83,12 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
     int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
     int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
 
-    unsigned int cursorY = startY;
+    int cursorY = startY;
     unsigned int internalCursorY = 0;
     bool allPixelsRendered = true;
     while (cursorY < endY)
     {
-        unsigned int cursorX = startX;
+        int cursorX = startX;
         unsigned int internalCursorX = 0;
         while (cursorX < endX)
         {

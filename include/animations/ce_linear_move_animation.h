@@ -10,15 +10,15 @@ public:
     void stop();
     void loop();
     bool isFinished();
-    void setStartPosition(unsigned int x, unsigned int y);
-    void setEndPosition(unsigned int x, unsigned int y);
+    void setStartPosition(int x, int y);
+    void setEndPosition(int x, int y);
     void setDuration(uint64_t duration);
 
 protected:
-    unsigned int startX;
-    unsigned int startY;
-    unsigned int endX;
-    unsigned int endY;
+    int startX;
+    int startY;
+    int endX;
+    int endY;
     uint64_t duration;
     uint64_t startTime;
     bool finished;

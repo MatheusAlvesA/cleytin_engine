@@ -28,17 +28,17 @@ void CERectangle::setWidth(unsigned int w) {
 }
 
 void CERectangle::setHeight(unsigned int h) {
-    unsigned int oldEndY = this->posY + this->height;
-    unsigned int newEndY = this->posY + h;
+    int oldEndY = this->posY + (int) this->height;
+    int newEndY = this->posY + (int) h;
     this->height = h;
 
     CEPoint *start = new CEPoint(
-        (int) this->posX,
-        (int) (oldEndY < newEndY ? oldEndY : newEndY) - 1
+        this->posX,
+        (oldEndY < newEndY ? oldEndY : newEndY) - 1
     );
     CEPoint *end = new CEPoint(
-        (int) (this->posX + this->width),
-        (int) (oldEndY < newEndY ? newEndY : oldEndY) + 1
+        this->posX + (int) this->width,
+       (oldEndY < newEndY ? newEndY : oldEndY) + 1
     );
 
     CERenderWindow *altered = new CERenderWindow(start, end);
@@ -48,21 +48,21 @@ void CERectangle::setHeight(unsigned int h) {
     this->addAlteredWindow(altered);
 }
 
-void CERectangle::setPosX(unsigned int x) {
-    unsigned int oldEndX = this->posX + this->width;
-    unsigned int oldStartX = this->posX;
+void CERectangle::setPosX(int x) {
+    int oldEndX = this->posX + (int) this->width;
+    int oldStartX = this->posX;
     this->posX = x;
-    unsigned int newEndX = this->posX + this->width;
-    unsigned int newStartX = this->posX;
+    int newEndX = this->posX + (int) this->width;
+    int newStartX = this->posX;
 
     // Adicionanando o final do retangulo
     CEPoint *start = new CEPoint(
-        (int) (oldEndX < newEndX ? oldEndX : newEndX),
-        (int) this->posY
+        (oldEndX < newEndX ? oldEndX : newEndX),
+        this->posY
     );
     CEPoint *end = new CEPoint(
-        (int) (oldEndX < newEndX ? newEndX : oldEndX),
-        (int) (this->posY + this->height)
+        (oldEndX < newEndX ? newEndX : oldEndX),
+        (this->posY + (int) this->height)
     );
 
     CERenderWindow *altered = new CERenderWindow(start, end);
@@ -73,12 +73,12 @@ void CERectangle::setPosX(unsigned int x) {
 
     // Adicionando o inicio do retangulo
     start = new CEPoint(
-        (int) (oldStartX < newStartX ? oldStartX : newStartX) - 1,
-        (int) this->posY
+        (oldStartX < newStartX ? oldStartX : newStartX) - 1,
+        this->posY
     );
     end = new CEPoint(
-        (int) (oldStartX < newStartX ? newStartX : oldStartX) + 1,
-        (int) (this->posY + this->height)
+        (oldStartX < newStartX ? newStartX : oldStartX) + 1,
+        (this->posY + (int) this->height)
     );
 
     altered = new CERenderWindow(start, end);
@@ -88,21 +88,21 @@ void CERectangle::setPosX(unsigned int x) {
     this->addAlteredWindow(altered);
 }
 
-void CERectangle::setPosY(unsigned int x) {
-    unsigned int oldEndY = this->posY + this->height;
-    unsigned int oldStartY = this->posY;
-    this->posY = x;
-    unsigned int newEndY = this->posY + this->height;
-    unsigned int newStartY = this->posY;
+void CERectangle::setPosY(int y) {
+    int oldEndY = this->posY + (int) this->height;
+    int oldStartY = this->posY;
+    this->posY = y;
+    int newEndY = this->posY + (int) this->height;
+    int newStartY = this->posY;
 
     // Adicionanando o final do retangulo
     CEPoint *start = new CEPoint(
-        (int) this->posX,
-        (int) (oldEndY < newEndY ? oldEndY : newEndY)
+        this->posX,
+        (oldEndY < newEndY ? oldEndY : newEndY)
     );
     CEPoint *end = new CEPoint(
-        (int) (this->posX + this->width),
-        (int) (oldEndY < newEndY ? newEndY : oldEndY)
+        (this->posX + (int) this->width),
+        (oldEndY < newEndY ? newEndY : oldEndY)
     );
 
     CERenderWindow *altered = new CERenderWindow(start, end);
@@ -113,12 +113,12 @@ void CERectangle::setPosY(unsigned int x) {
 
     // Adicionando o inicio do retangulo
     start = new CEPoint(
-        (int) this->posX,
-        (int) (oldStartY < newStartY ? oldStartY : newStartY) - 1
+        this->posX,
+        (oldStartY < newStartY ? oldStartY : newStartY) - 1
     );
     end = new CEPoint(
-        (int) (this->posX + this->width),
-        (int) (oldStartY < newStartY ? newStartY : oldStartY) + 1
+        (this->posX + (int) this->width),
+        (oldStartY < newStartY ? newStartY : oldStartY) + 1
     );
 
     altered = new CERenderWindow(start, end);
@@ -128,7 +128,7 @@ void CERectangle::setPosY(unsigned int x) {
     this->addAlteredWindow(altered);
 }
 
-void CERectangle::setPos(unsigned int x, unsigned int y) {
+void CERectangle::setPos(int x, int y) {
     this->setPosX(x);
     this->setPosY(y);
 }
@@ -143,8 +143,8 @@ unsigned int CERectangle::getHeight() {
 
 CERenderWindow* CERectangle::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
-    CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
-    CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint((this->posX + (int) this->width), (this->posY + (int) this->height));
     window->setPoints(start, end);
     delete start;
     delete end;

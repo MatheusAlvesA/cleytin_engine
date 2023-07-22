@@ -100,6 +100,10 @@ public:
     ~CleytinEngine();
 
     unsigned int addObject(CEGraphicObject *obj);
+    /**
+     * @brief Marca um objeto para ser apagado(memória liberada) no início do próximo loop, garantindo que o objeto não será apagado durante o loop atual.
+    */
+    void markToDelete(CEGraphicObject *obj);
     bool removeObject(CEGraphicObject *obj, bool freeMemory = false);
     bool removeObjectAt(size_t index, bool freeMemory = false);
     void clear(bool freeMemory = false);
@@ -117,6 +121,8 @@ private:
     CECanvas *canvas;
     std::vector<CEGraphicObject *> objects;
     std::vector<CERenderWindow *> alteredWindows;
+    std::vector<int> toDeleteIndexes;
+    void deleteMarkedObjects();
 };
 
 #endif

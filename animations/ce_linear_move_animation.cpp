@@ -24,22 +24,23 @@ void CELinearMoveAnimation::loop() {
    if(this->finished) {
       return;
    }
-   unsigned int elapsed = this->startTime - esp_timer_get_time();
-   unsigned int x = this->endX;
-   unsigned int y = this->endY;
-   if(elapsed >= this->duration) {
-      this->object->setPos(x, y);
+   uint64_t elapsed = esp_timer_get_time() - this->startTime;
+   uint64_t duration = ((uint64_t)this->duration) * 1000;
+   int x = this->startX;
+   int y = this->startY;
+   if(elapsed >= duration) {
+      this->object->setPos(this->endX, this->endY);
       this->finished = true;
    }
-   float percentage = (float) ((float)elapsed / startTime);
+   float percentage = (float) ((float)elapsed / duration);
 
-   int deltaX = (int) this->endX - (int) this->startX;
+   float deltaX = (float) this->endX - (float) this->startX;
    deltaX *= percentage;
-   x += deltaX;
+   x += (int) deltaX;
 
-   int deltaY = (int) this->endY - (int) this->startY;
+   float deltaY = (float) this->endY - (float) this->startY;
    deltaY *= percentage;
-   y += deltaY;
+   y += (int) deltaY;
 
    this->object->setPos(x, y);
 }
@@ -52,12 +53,12 @@ bool CELinearMoveAnimation::isFinished() {
    return this->finished;
 }
 
-void CELinearMoveAnimation::setStartPosition(unsigned int x, unsigned int y) {
+void CELinearMoveAnimation::setStartPosition(int x, int y) {
    this->startX = x;
    this->startY = y;
 }
 
-void CELinearMoveAnimation::setEndPosition(unsigned int x, unsigned int y) {
+void CELinearMoveAnimation::setEndPosition(int x, int y) {
    this->endX = x;
    this->endY = y;
 }

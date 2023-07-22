@@ -30,7 +30,7 @@ protected:
     CEColor bgColor;
     bool bgColorSet;
 
-    bool renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y);
+    bool renderChar(CECanvas *canvas, char c, int x, int y);
 };
 
 #endif

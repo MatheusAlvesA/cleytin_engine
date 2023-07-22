@@ -81,15 +81,15 @@ void CEText::setSizeMultiplier(uint8_t size) {
 
 CERenderWindow* CEText::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
-    CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
-    CEPoint *end = new CEPoint((int) (this->posX + this->getWidth()), (int) (this->posY + this->getHeight()));
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint((this->posX + (int) this->getWidth()), (this->posY + (int) this->getHeight()));
     window->setPoints(start, end);
     delete start;
     delete end;
     return window;
 }
 
-bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y) {
+bool CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
     uint8_t *mappedPointer = this->font->getRawPonter() + this->font->getPositionOf(c);
     unsigned int charWidth = this->font->getCharWidth();
     unsigned int charHeight = this->font->getCharHeight();
@@ -121,9 +121,9 @@ bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y
 
 bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     CERenderWindow *w = this->getRenderWindow();
-    unsigned int startX = w->topLeft->x;
-    unsigned int cursorX = startX;
-    unsigned int cursorY = w->topLeft->y;
+    int startX = w->topLeft->x;
+    int cursorX = startX;
+    int cursorY = w->topLeft->y;
     unsigned int maxX = w->bottomRight->x;
     unsigned int maxY = w->bottomRight->y;
     delete w;
