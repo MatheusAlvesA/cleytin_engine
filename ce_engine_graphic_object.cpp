@@ -420,8 +420,8 @@ bool CEGraphicObject::addAlteredWindow(CERenderWindow *w) {
         w->topLeft->y > this->maxY ||
         w->bottomRight->x < 0 ||
         w->bottomRight->y < 0 ||
-        w->topLeft->x >= w->bottomRight->x ||
-        w->topLeft->y >= w->bottomRight->y
+        w->topLeft->x > w->bottomRight->x ||
+        w->topLeft->y > w->bottomRight->y
     ) {
         delete w;
         return false;

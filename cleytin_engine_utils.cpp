@@ -9,19 +9,21 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
     std::vector<CERenderWindow *> *r = new std::vector<CERenderWindow *>();
 
     if(list->size() <= 0) return r;
+    std::vector<size_t> *processedIndexes = new std::vector<size_t>();
 
     for (size_t i = 0; i < list->size(); i++) {
-        CERenderWindow *candidate = list->at(i)->clone();
+        CERenderWindow *candidate = list->at(i);
         // Testando se alguma janela contém a janela candidata
         bool contained = false;
         for (size_t j = 0; j < list->size(); j++)
         {
             if(j == i) continue;
+            if(in_array<size_t>(j, processedIndexes)) continue;
             if(
                 *list->at(j) == *candidate ||
                 list->at(j)->containsWindow(candidate)
             ) {
-                delete candidate;
+                processedIndexes->push_back(i);
                 contained = true;
                 break;
             }
@@ -34,14 +36,13 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
                 *r->at(j) == *candidate ||
                 r->at(j)->containsWindow(candidate)
             ) {
-                delete candidate;
                 contained = true;
                 break;
             }
         }
         if(contained) continue;
 
-        r->push_back(candidate);
+        r->push_back(candidate->clone());
     }
 
     // Se não houver nenhuma janela, então todas as janelas são sub-janelas
@@ -50,6 +51,7 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         r->push_back(list->at(0)->clone());
     }
 
+    delete processedIndexes;
     return r;
 }
 
