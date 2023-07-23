@@ -84,7 +84,7 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
     int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
 
     unsigned int offsetX = (unsigned int) (startX - window->topLeft->x) / (unsigned int) this->getSizeMultiplier();
-    unsigned int offsetY = (unsigned int) (startY - window->topLeft->y) / (unsigned int) this->getSizeMultiplier();    
+    unsigned int offsetY = (unsigned int) (startY - window->topLeft->y) / (unsigned int) this->getSizeMultiplier();
 
     int cursorY = startY;
     unsigned int internalCursorY = offsetY;

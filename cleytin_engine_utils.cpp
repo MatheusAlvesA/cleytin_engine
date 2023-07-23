@@ -185,16 +185,16 @@ void remove_intersection(CERenderWindow *main, CERenderWindow *candidate) {
         switch (side)
         {
         case CEWindowIntersectionSide::TOP:
-            candidate->topRight->y = candidate->topLeft->y = main->bottomLeft->y + 1;
+            candidate->topRight->y = candidate->topLeft->y = main->bottomLeft->y;
             break;
         case CEWindowIntersectionSide::BOTTOM:
-            candidate->bottomRight->y = candidate->bottomLeft->y = main->topLeft->y - 1;
+            candidate->bottomRight->y = candidate->bottomLeft->y = main->topLeft->y;
             break;
         case CEWindowIntersectionSide::LEFT:
-            candidate->topLeft->x = candidate->bottomLeft->x = main->topRight->x + 1;
+            candidate->topLeft->x = candidate->bottomLeft->x = main->topRight->x;
             break;
         case CEWindowIntersectionSide::RIGHT:
-            candidate->topRight->x = candidate->bottomRight->x = main->topLeft->x - 1;
+            candidate->topRight->x = candidate->bottomRight->x = main->topLeft->x;
             break;
         
         default:

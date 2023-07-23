@@ -70,12 +70,15 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
     int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
     int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
 
+    unsigned int offsetX = (unsigned int) (startX - window->topLeft->x) / (unsigned int) this->getSizeMultiplier();
+    unsigned int offsetY = (unsigned int) (startY - window->topLeft->y) / (unsigned int) this->getSizeMultiplier();
+
     int cursorY = startY;
-    unsigned int internalCursorY = 0;
+    unsigned int internalCursorY = offsetY;
     bool allPixelRendered = true;
     while(cursorY < endY) {
         int cursorX = startX;
-        unsigned int internalCursorX = 0;
+        unsigned int internalCursorX = offsetX;
         while (cursorX < endX)
         {
             unsigned int bitPos = internalCursorX + (internalCursorY * this->width);
