@@ -64,7 +64,8 @@ const uint8_t *CEBitmap::getBuffer() {
     return this->buffer;
 }
 
-bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
+bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+{
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
     int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
@@ -73,11 +74,12 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
     unsigned int offsetX = (unsigned int) (startX - window->topLeft->x) / (unsigned int) this->getSizeMultiplier();
     unsigned int offsetY = (unsigned int) (startY - window->topLeft->y) / (unsigned int) this->getSizeMultiplier();
 
-    int cursorY = startY;
+    int cursorY = startY - ((startY - window->topLeft->y) % this->getSizeMultiplier());
     unsigned int internalCursorY = offsetY;
     bool allPixelRendered = true;
-    while(cursorY < endY) {
-        int cursorX = startX;
+    while(cursorY < endY)
+    {
+        int cursorX = startX - ((startX - window->topLeft->x) % this->getSizeMultiplier());
         unsigned int internalCursorX = offsetX;
         while (cursorX < endX)
         {
