@@ -108,6 +108,7 @@ public:
     bool removeObjectAt(size_t index, bool freeMemory = false);
     void clear(bool freeMemory = false);
     std::vector<size_t> *getCollisionsOn(size_t index);
+    std::vector<size_t> *getCollisionsOn(CEGraphicObject *obj);
     CEGraphicObject *getObjectAt(size_t index);
     std::vector<size_t> *getObjectsAt(CEPoint *point);
     size_t getObjectIndex(CEGraphicObject *obj);
@@ -121,7 +122,7 @@ private:
     CECanvas *canvas;
     std::vector<CEGraphicObject *> objects;
     std::vector<CERenderWindow *> alteredWindows;
-    std::vector<int> toDeleteIndexes;
+    std::vector<CEGraphicObject *> toDeleteIndexes;
     void deleteMarkedObjects();
 };
 

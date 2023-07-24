@@ -24,14 +24,14 @@ unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
 
 void CleytinEngine::deleteMarkedObjects() {
     for(int i = 0; i < this->toDeleteIndexes.size(); i++) {
-        this->removeObjectAt(this->toDeleteIndexes[i], true);
+        this->removeObject(this->toDeleteIndexes[i], true);
     }
     this->toDeleteIndexes.clear();
 }
 
 void CleytinEngine::markToDelete(CEGraphicObject *obj)
 {
-    return this->toDeleteIndexes.push_back(this->getObjectIndex(obj));
+    return this->toDeleteIndexes.push_back(obj);
 }
 
 bool CleytinEngine::removeObject(CEGraphicObject *obj, bool freeMemory)
@@ -140,6 +140,11 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
     delete_pointers_vector<CEPoint>(targetPoints);
 
     return r;
+}
+
+std::vector<size_t> *CleytinEngine::getCollisionsOn(CEGraphicObject *obj)
+{
+    return this->getCollisionsOn(this->getObjectIndex(obj));
 }
 
 size_t CleytinEngine::getObjectsCount()
