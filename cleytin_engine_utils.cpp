@@ -5,6 +5,34 @@ bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b)
     return a->getPriority() < b->getPriority();
 }
 
+std::vector<CERenderWindow *> *generate_global_container(std::vector<CERenderWindow *> *list) {
+    std::vector<CERenderWindow *> *r = new std::vector<CERenderWindow *>();
+
+    if(list->size() <= 0) return r;
+    
+    int minX = list->at(0)->topLeft->x;
+    int minY = list->at(0)->topLeft->y;
+    int maxX = list->at(0)->bottomRight->x;
+    int maxY = list->at(0)->bottomRight->y;
+
+    for (size_t i = 1; i < list->size(); i++) {
+        CERenderWindow *w = list->at(i);
+        if(w->topLeft->x < minX) minX = w->topLeft->x;
+        if(w->topLeft->y < minY) minY = w->topLeft->y;
+        if(w->bottomRight->x > maxX) maxX = w->bottomRight->x;
+        if(w->bottomRight->y > maxY) maxY = w->bottomRight->y;
+    }
+
+    r->push_back(
+        new CERenderWindow(
+            new CEPoint(minX, minY),
+            new CEPoint(maxX, maxY)
+        )
+    );
+
+    return r;
+}
+
 std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERenderWindow *> *list) {
     std::vector<CERenderWindow *> *r = new std::vector<CERenderWindow *>();
 
@@ -236,6 +264,10 @@ std::vector<CERenderWindow *> *remove_intersections(std::vector<CERenderWindow *
 }
 
 std::vector<CERenderWindow *> *optimize_container_windows(std::vector<CERenderWindow *> *list) {
+    if(list->size() > 3) {
+        return generate_global_container(list);
+    }
+
     std::vector<CERenderWindow *> *stage1 = remove_sub_container_windows(list);
     std::vector<CERenderWindow *> *stage2 = fuse_container_windows(stage1);
     std::vector<CERenderWindow *> *stage3 = remove_intersections(stage2);

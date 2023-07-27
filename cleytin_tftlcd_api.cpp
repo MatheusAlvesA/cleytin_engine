@@ -26,11 +26,12 @@ CleytinTFTAPI::CleytinTFTAPI() {
 
     spi_device_interface_config_t devcfg;
     memset(&devcfg, 0, sizeof(spi_device_interface_config_t));
-    devcfg.clock_speed_hz = 26*1000*1000;           //Clock em 26 MHz
+    devcfg.clock_speed_hz = 40*1000*1000;           //Clock em 40 MHz
     devcfg.mode = 0;                                //SPI mode 0
     devcfg.spics_io_num = LCD_PIN_NUM_CS;
     devcfg.queue_size = 7;                          //Limite de transações em fila
     devcfg.pre_cb = lcd_spi_pre_transfer_callback;
+    devcfg.flags = SPI_DEVICE_NO_DUMMY;
 
     ret = spi_bus_initialize(HSPI_HOST, &buscfg, SPI_DMA_CH_AUTO);
     ESP_ERROR_CHECK(ret);
