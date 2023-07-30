@@ -29,6 +29,7 @@ private:
     uint16_t startY;
     uint16_t endX;
     uint16_t endY;
+    size_t bufferPointer;
 };
 
 #endif

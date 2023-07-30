@@ -1,7 +1,8 @@
 #include "ce_canvas_tftlcd_320x240.h"
 
 CECanvasTFTLCD320x240::CECanvasTFTLCD320x240() {
-    this->frameBuffer = new uint16_t[this->getCanvasWidth() * this->getCanvasHeight()];;
+    this->frameBuffer = new uint16_t[this->getCanvasWidth() * this->getCanvasHeight()];
+    this->bufferPointer = 0;
     this->setBackgroundColor({0xFF, 0xFF, 0xFF});
     this->prepareWindow(0, 0, this->getCanvasWidth(), this->getCanvasHeight());
 
@@ -26,7 +27,7 @@ bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, uint16_t co
     x -= this->startX;
     y -= this->startY;
     uint16_t width = this->endX - this->startX;
-    this->frameBuffer[y * width + x] = color;
+    this->frameBuffer[this->bufferPointer + (y * width + x)] = color;
     return true;
 }
 
@@ -42,14 +43,19 @@ unsigned int CECanvasTFTLCD320x240::getCanvasHeight() {
 }
 
 bool CECanvasTFTLCD320x240::render() {
+    this->lcdAPI->waitBufferTransfer();
+
     this->lcdAPI->sendBuffer(
-        this->frameBuffer,
+        this->frameBuffer + this->bufferPointer,
         this->startX,
         this->startY,
         this->endX,
         this->endY
     );
-    this->lcdAPI->waitBufferTransfer();
+
+    size_t width = this->endX - this->startX;
+    size_t height = this->endY - this->startY;
+    this->bufferPointer += (width * height);
 
     return true;
 }
@@ -63,11 +69,11 @@ void CECanvasTFTLCD320x240::clear() {
     uint16_t height = this->endY - this->startY;
 
     if(bgColor == white) {
-        memset(this->frameBuffer, 0xFF, width * height * 2);
+        memset(this->frameBuffer + this->bufferPointer, 0xFF, width * height * 2);
         return;
     }
     if(bgColor == black) {
-        memset(this->frameBuffer, 0x0, width * height * 2);
+        memset(this->frameBuffer + this->bufferPointer, 0x0, width * height * 2);
         return;
     }
 
@@ -99,6 +105,13 @@ void CECanvasTFTLCD320x240::prepareWindow(unsigned int startX, unsigned int star
     this->startY = (uint16_t) startY;
     this->endX = (uint16_t) endX;
     this->endY = (uint16_t) endY;
+
+    size_t width = endX - startX;
+    size_t height = endY - startY;
+    if((this->bufferPointer + width * height) >= this->getCanvasWidth() * this->getCanvasHeight()) {
+        this->bufferPointer = 0;
+        this->lcdAPI->waitBufferTransfer();
+    }
 
     this->clear();
 }
