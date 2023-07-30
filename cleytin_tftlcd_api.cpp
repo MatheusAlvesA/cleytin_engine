@@ -52,7 +52,7 @@ uint32_t CleytinTFTAPI::getLcdId()
 {
     this->sendCmd(0x04);
 
-    spi_transaction_t t;
+    spi_transaction_t t = {};
     memset(&t, 0, sizeof(t));
     t.length = 8 * 3;
     t.flags = SPI_TRANS_USE_RXDATA;
@@ -65,7 +65,7 @@ uint32_t CleytinTFTAPI::getLcdId()
 }
 
 void CleytinTFTAPI::sendCmd(const uint8_t cmd) {
-    spi_transaction_t t;
+    spi_transaction_t t = {};
     memset(&t, 0, sizeof(t));
     t.length = 8;
     t.tx_buffer = &cmd;
@@ -74,7 +74,7 @@ void CleytinTFTAPI::sendCmd(const uint8_t cmd) {
 }
 
 void CleytinTFTAPI::sendData(const uint8_t *data, int len) {
-    spi_transaction_t t;
+    spi_transaction_t t = {};
     if(len == 0) return;
     memset(&t, 0, sizeof(t));
     t.length = len * 8;
@@ -117,7 +117,7 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff, uint16_t startX, uint16_t startY,
     }
     // Declarando estático pois precisamos dessa memória durante a transmissão que ainda vai estar
     // acontecendo após o termino da execução desse método
-    static spi_transaction_t trans[6];
+    static spi_transaction_t trans[6] = {{}, {}, {}, {}, {}, {}};
     memset(trans, 0, sizeof(spi_transaction_t) * 6);
 
     for (int x = 0; x < 6; x++) {
@@ -171,7 +171,7 @@ void CleytinTFTAPI::waitBufferTransfer() {
     if(!this->sendingBuffer) {
         return;
     }
-    spi_transaction_t *_;
+    spi_transaction_t *_ = NULL;
     for (int x = 0; x < 6; x++) {
         spi_device_get_trans_result(*this->spi, &_, portMAX_DELAY);
     }
