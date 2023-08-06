@@ -217,12 +217,13 @@ bool CleytinEngine::renderToCanvas()
         if(w->topLeft->x < 0) w->topLeft->x = 0;
         if(w->topLeft->y < 0) w->topLeft->y = 0;
 
-        this->canvas->prepareWindow(
+        bool r = this->canvas->prepareWindow(
             w->topLeft->x,
             w->topLeft->y,
             w->bottomRight->x,
             w->bottomRight->y
         );
+        if(!r) continue; // Janela inválida, pulando render
 
         std::vector<CEGraphicObject *> *objs = this->getObjectsOnWindow(w);
         for (size_t i = 0; i < objs->size(); i++)

@@ -40,7 +40,7 @@ public:
     virtual bool clearPixel(unsigned int x, unsigned int y) = 0;
     virtual bool render() = 0;
     virtual void clear() = 0;
-    virtual void prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY) = 0;
+    virtual bool prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY) = 0;
 
 private:
     CEColor backgroundColor;

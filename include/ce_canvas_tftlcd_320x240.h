@@ -20,7 +20,7 @@ public:
     bool clearPixel(unsigned int x, unsigned int y);
     bool render();
     void clear();
-    void prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
+    bool prepareWindow(unsigned int startX, unsigned int startY, unsigned int endX, unsigned int endY);
 
 private:
     uint16_t *frameBuffer;
