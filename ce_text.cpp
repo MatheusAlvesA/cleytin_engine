@@ -102,13 +102,15 @@ bool CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
             unsigned int bitOffset = bitPos % 8;
             for (size_t i = 0; i < this->getSizeMultiplier(); i++) {
                 for (size_t j = 0; j < this->getSizeMultiplier(); j++) {
+                    uint8_t activePixel = mappedPointer[bytePos] & (1 << (7 - bitOffset));
+                    if(activePixel == 0 && !this->bgColorSet) {
+                        continue;
+                    }
                     if(!this->setPixel(
                         canvas,
                         i + x + (cursorX * this->getSizeMultiplier()),
                         j + y + (cursorY * this->getSizeMultiplier()),
-                        (mappedPointer[bytePos] & (1 << (7 - bitOffset)))
-                            ? this->getBaseColor()
-                            : currentBGColor
+                        activePixel ? this->getBaseColor() : currentBGColor
                     )) {
                         r = false;
                     }
