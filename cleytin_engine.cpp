@@ -217,6 +217,15 @@ bool CleytinEngine::renderToCanvas()
         if(w->topLeft->x < 0) w->topLeft->x = 0;
         if(w->topLeft->y < 0) w->topLeft->y = 0;
 
+        if(
+            w->topLeft->x > this->canvas->getCanvasWidth() ||
+            w->topLeft->y > this->canvas->getCanvasHeight() ||
+            w->bottomRight->x < 0 ||
+            w->bottomRight->y < 0
+        ) {
+            continue;
+        }
+
         bool r = this->canvas->prepareWindow(
             w->topLeft->x,
             w->topLeft->y,

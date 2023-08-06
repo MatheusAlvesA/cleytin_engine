@@ -19,6 +19,32 @@ bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, const CECol
     return this->setPixel(x, y, colorToRGB565(color));
 }
 
+bool CECanvasTFTLCD320x240::setLinePixels(unsigned int y, unsigned int startX, unsigned int endX, const uint16_t *pixels) {
+    if(y > this->endY || y < this->startY || endX < this->startX || startX > this->endX || startX > endX) {
+        return false;
+    }
+    if(endX > this->endX) {
+        endX = this->endX;
+    }
+    unsigned int offset = 0;
+    if(startX < this->startX) {
+        offset = this->startX - startX;
+        startX = this->startX;
+    }
+    if(startX > endX) {
+        return false;
+    }
+
+    uint16_t width = this->endX - this->startX;
+    y -= this->startY;
+    memcpy(
+        this->frameBuffer + this->bufferPointer + (y * width) + (startX - this->startX),
+        pixels + offset,
+        (endX - startX) * 2
+    );
+    return true;
+}
+
 bool CECanvasTFTLCD320x240::setPixel(unsigned int x, unsigned int y, uint16_t color) {
     if(x >= this->endX || y >= this->endY || x < this->startX || y < this->startY) {
         return false;

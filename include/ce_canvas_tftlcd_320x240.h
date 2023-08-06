@@ -17,6 +17,7 @@ public:
     unsigned int getCanvasHeight();
     bool setPixel(unsigned int x, unsigned int y, const CEColor color);
     bool setPixel(unsigned int x, unsigned int y, uint16_t color);
+    bool setLinePixels(unsigned int y, unsigned int startX, unsigned int endX, const uint16_t *pixels);
     bool clearPixel(unsigned int x, unsigned int y);
     bool render();
     void clear();

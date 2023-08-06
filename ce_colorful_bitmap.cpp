@@ -7,6 +7,12 @@ CEColorfulBitmap::CEColorfulBitmap()
     this->buffer = NULL;
     this->alphaColor = 0;
     this->sizeMultiplier = 1;
+    this->hasTransparency = true;
+    this->addCurrentWindowAsAltered();
+}
+
+void CEColorfulBitmap::setHasTransparency(bool hasTransparency) {
+    this->hasTransparency = hasTransparency;
     this->addCurrentWindowAsAltered();
 }
 
@@ -78,6 +84,15 @@ const uint16_t *CEColorfulBitmap::getBuffer()
 
 bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
+    if(
+        this->getSizeMultiplier() == 1 &&
+        this->getRotation() == 0 &&
+        !this->getMirrored() &&
+        !this->getNegative() &&
+        !this->hasTransparency
+    ) {
+        return this->fastRenderToCanvas(canvas, window, subWindow);
+    }
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
     int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
@@ -119,6 +134,39 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
             internalCursorX++;
         }
         cursorY += this->getSizeMultiplier();
+        internalCursorY++;
+    }
+
+    return allPixelsRendered;
+}
+
+bool CEColorfulBitmap::fastRenderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+{
+    int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
+    int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
+    int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
+    int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
+
+    unsigned int offsetX = (unsigned int) (startX - window->topLeft->x) / (unsigned int) this->getSizeMultiplier();
+    unsigned int offsetY = (unsigned int) (startY - window->topLeft->y);
+
+    int cursorY = startY;
+    unsigned int internalCursorY = offsetY;
+    bool allPixelsRendered = true;
+    while (cursorY < endY)
+    {
+        unsigned int index = internalCursorY * this->width + offsetX;
+        if (
+            !canvas->setLinePixels(
+                cursorY,
+                startX,
+                endX,
+                this->buffer + index
+            ))
+        {
+            allPixelsRendered = false;
+        }
+        cursorY++;
         internalCursorY++;
     }
 

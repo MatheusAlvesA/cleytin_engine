@@ -10,6 +10,7 @@ public:
     void setHeight(unsigned int h);
     void setBuffer(const uint16_t *buffer);
     void setSizeMultiplier(uint8_t size);
+    void setHasTransparency(bool hasTransparency);
     unsigned int getWidth();
     void setAlphaColor(uint16_t color);
     unsigned int getHeight();
@@ -19,6 +20,7 @@ public:
 
     CERenderWindow* getRenderWindow();
     bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    bool fastRenderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     unsigned int width;
@@ -26,6 +28,7 @@ protected:
     const uint16_t *buffer;
     uint16_t alphaColor;
     uint8_t sizeMultiplier;
+    bool hasTransparency;
 };
 
 #endif

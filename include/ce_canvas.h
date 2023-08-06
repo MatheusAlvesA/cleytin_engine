@@ -37,6 +37,7 @@ public:
     virtual unsigned int getCanvasHeight() = 0;
     virtual bool setPixel(unsigned int x, unsigned int y, const CEColor color) = 0;
     virtual bool setPixel(unsigned int x, unsigned int y, uint16_t color) = 0;
+    virtual bool setLinePixels(unsigned int y, unsigned int startX, unsigned int endX, const uint16_t *pixels) = 0;
     virtual bool clearPixel(unsigned int x, unsigned int y) = 0;
     virtual bool render() = 0;
     virtual void clear() = 0;
