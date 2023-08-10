@@ -2,11 +2,11 @@
 
 CECanvasTFTLCD320x240::CECanvasTFTLCD320x240() {
     this->frameBuffer = new uint16_t[this->getCanvasWidth() * this->getCanvasHeight()];
+    this->lcdAPI = new CleytinTFTAPI();
     this->bufferPointer = 0;
     this->setBackgroundColor({0xFF, 0xFF, 0xFF});
     this->prepareWindow(0, 0, this->getCanvasWidth(), this->getCanvasHeight());
 
-    this->lcdAPI = new CleytinTFTAPI();
     this->render();
 }
 
