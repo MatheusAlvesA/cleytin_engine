@@ -15,9 +15,10 @@ public:
     bool isFinished();
     void setDuration(uint64_t duration);
     void setBitmapObject(CEColorfulBitmap *bitmap);
+    void setFramesFrom(std::vector<const uint16_t *> *sprites);
 
 protected:
-    std::vector<uint16_t *> *sprites;
+    std::vector<const uint16_t *> *sprites;
     const uint16_t *bkpSprite;
     CEColorfulBitmap *bitmap;
     uint64_t duration;

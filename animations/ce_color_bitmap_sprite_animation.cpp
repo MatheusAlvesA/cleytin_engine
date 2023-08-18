@@ -1,7 +1,7 @@
 #include "ce_color_bitmap_sprite_animation.h"
 
 CEColorBitmapSpriteAnimation::CEColorBitmapSpriteAnimation() {
-   this->sprites = new std::vector<uint16_t *>();
+   this->sprites = new std::vector<const uint16_t *>();
    this->bitmap = NULL;
    this->bkpSprite = NULL;
    this->finished = true;
@@ -16,6 +16,13 @@ CEColorBitmapSpriteAnimation::~CEColorBitmapSpriteAnimation() {
 void CEColorBitmapSpriteAnimation::setBitmapObject(CEColorfulBitmap *bitmap) {
    this->bitmap = bitmap;
    this->bkpSprite = bitmap->getBuffer();
+}
+
+void CEColorBitmapSpriteAnimation::setFramesFrom(std::vector<const uint16_t *> *sprites) {
+   this->sprites->clear();
+   for (size_t i = 0; i < sprites->size(); i++) {
+      this->sprites->push_back(sprites->at(i));
+   }
 }
 
 void CEColorBitmapSpriteAnimation::start() {
