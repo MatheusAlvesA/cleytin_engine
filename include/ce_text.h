@@ -29,8 +29,20 @@ protected:
     uint8_t sizeMultiplier;
     CEColor bgColor;
     bool bgColorSet;
+    size_t lineBreaksCount;
+    size_t lengthWidestLine;
+    size_t wrapCount;
 
     bool renderChar(CECanvas *canvas, char c, int x, int y);
+    void recalcLineBreaks();
+    bool calcBreakLine(
+        int &cursorY,
+        int &cursorX,
+        int startX,
+        size_t charHeight,
+        unsigned int maxY,
+        size_t &nextCharYPos
+    );
 };
 
 #endif

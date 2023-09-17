@@ -10,11 +10,44 @@ CEText::CEText() {
     this->bgColor = {0xFF, 0xFF, 0xFF};
     this->bgColorSet = false;
     this->addCurrentWindowAsAltered();
+    this->lengthWidestLine = 0;
+    this->lineBreaksCount = 0;
+    this->wrapCount = 0;
 }
 
 CEText::~CEText() {
     delete this->font;
     delete this->text;
+}
+
+void CEText::recalcLineBreaks() {
+    size_t availableWidth = this->maxX - this->posX;
+    size_t charWidth = this->font->getCharWidth() * this->getSizeMultiplier();
+    size_t currentLineLength = 0;
+    this->lengthWidestLine = 0;
+    this->wrapCount = 0;
+    this->lineBreaksCount = 0;
+    for (size_t i = 0; this->text[i] != '\0'; i++) {
+        if(currentLineLength > this->lengthWidestLine) {
+            this->lengthWidestLine = currentLineLength;
+        }
+        if(this->text[i] == '\n') {
+            if(currentLineLength * charWidth > availableWidth) {
+                this->wrapCount++;
+            }
+            this->lineBreaksCount++;
+            currentLineLength = 0;
+            continue;
+        }
+        currentLineLength++;
+    }
+
+    if(currentLineLength > this->lengthWidestLine) {
+        this->lengthWidestLine = currentLineLength;
+    }
+    if(currentLineLength * charWidth > availableWidth) {
+        this->wrapCount++;
+    }
 }
 
 void CEText::setCustomFont(CEFont *font) {
@@ -28,11 +61,13 @@ void CEText::setText(const char *buffer) {
     this->text = this->font->parseString(buffer);
     char *tmp = this->text;
     for (this->length = 0; *(tmp++) != '\0'; this->length++);
+    this->recalcLineBreaks();
     this->addCurrentWindowAsAltered();
 }
 
 void CEText::setWrap(bool wrap) {
     this->wrap = wrap;
+    this->recalcLineBreaks();
     this->addCurrentWindowAsAltered();
 }
 
@@ -48,26 +83,21 @@ CEColor CEText::getBGColor() {
 
 unsigned int CEText::getWidth() {
     size_t charWidth = this->font->getCharWidth() * this->getSizeMultiplier();
-    if(this->posX + this->length * charWidth >= this->maxX) {
+    unsigned int width = this->lengthWidestLine * charWidth;
+    if(this->posX + width >= this->maxX) {
         return this->maxX - this->posX;
     } else {
-        return this->length * charWidth;
+        return width;
     }
 }
 
 unsigned int CEText::getHeight() {
     size_t charHeight = this->font->getCharHeight() * this->getSizeMultiplier();
     if(!this->wrap) {
-        return charHeight;
+        return charHeight * (this->lineBreaksCount + 1);
     }
 
-    size_t width = this->length * this->font->getCharWidth() * this->getSizeMultiplier();
-    size_t availableWidth = this->maxX - this->posX;
-    if(width > availableWidth) {
-        return ((width / availableWidth) + 1) * charHeight;
-    } else {
-        return charHeight;
-    }
+    return (charHeight * (this->lineBreaksCount + 1)) + (charHeight * (this->wrapCount + 1));
 }
 
 uint8_t CEText::getSizeMultiplier() {
@@ -136,8 +166,18 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
     charHeight *= this->getSizeMultiplier();
     bool allRendered = true;
     for (size_t i = 0; this->text[i] != '\0'; i++) {
+        if(this->text[i] == '\n') { // Situação especial, quebra de linha
+            size_t nextCharYPos = 0;
+            if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY, nextCharYPos)) {
+                return false;
+            }
+            continue;
+        }
         if(!this->renderChar(canvas, this->text[i], cursorX, cursorY)) {
             allRendered = false;
+        }
+        if(this->text[i+1] == '\n') { // O próximo char é uma quebra de linha
+            continue; // Não calcule a posição do próximo char, pois ele não renderizará
         }
         size_t nextCharXPos = ((size_t) cursorX) + charWidth; // Determine a posição do próximo char na linha
 
@@ -153,14 +193,30 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
             }
             return false; // Não é mais possível renderizar nada na linha, terminando
         }
-        // Realizando retorno de carrosel (Wrap)
-        size_t nextCharYPos = ((size_t) cursorY) + charHeight; // Determine a posição y da próxima linha
-        if(nextCharYPos > maxY) { // Se o início da próxima linha está fora do limite
-            return false; // Termine o render
+        size_t nextCharYPos = 0;
+        if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY, nextCharYPos)) {
+            return false;
         }
-        cursorY = nextCharYPos; // Vá para a próxima linha
-        cursorX = startX; // Comece do início da próxima linha
     }
 
     return allRendered;
+}
+
+bool CEText::calcBreakLine(
+    int &cursorY,
+    int &cursorX,
+    int startX,
+    size_t charHeight,
+    unsigned int maxY,
+    size_t &nextCharYPos
+) {
+    // Realizando retorno de carrosel (Wrap)
+    nextCharYPos = ((size_t) cursorY) + charHeight; // Determine a posição y da próxima linha
+    if(nextCharYPos > maxY) { // Se o início da próxima linha está fora do limite
+        return false; // Termine o render
+    }
+    cursorY = nextCharYPos; // Vá para a próxima linha
+    cursorX = startX; // Comece do início da próxima linha
+
+    return true;
 }
