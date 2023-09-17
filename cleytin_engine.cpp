@@ -186,7 +186,7 @@ std::vector<CEGraphicObject *> *CleytinEngine::getObjectsOnWindow(CERenderWindow
     return r;
 }
 
-bool IRAM_ATTR CleytinEngine::renderToCanvas()
+bool CleytinEngine::renderToCanvas()
 {
     std::vector<CERenderWindow *> *alteredWindows = new std::vector<CERenderWindow *>();
     for (size_t i = 0; i < this->objects.size(); i++)
