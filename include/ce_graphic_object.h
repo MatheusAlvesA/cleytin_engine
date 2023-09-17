@@ -73,7 +73,7 @@ protected:
     bool setPixel(CECanvas *canvas, int x, int y, uint16_t color);
     bool rotatePixel(int &x, int &y, uint16_t rot);
     void mirrorPixel(int &x);
-    void addCurrentWindowAsAltered();
+    virtual void addCurrentWindowAsAltered();
     bool addAlteredWindow(CERenderWindow *w);
 };
 

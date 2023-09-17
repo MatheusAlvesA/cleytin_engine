@@ -31,10 +31,10 @@ protected:
     bool bgColorSet;
     size_t lineBreaksCount;
     size_t lengthWidestLine;
-    size_t wrapCount;
 
     bool renderChar(CECanvas *canvas, char c, int x, int y);
     void recalcLineBreaks();
+    void addCurrentWindowAsAltered();
     bool calcBreakLine(
         int &cursorY,
         int &cursorX,

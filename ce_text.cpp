@@ -12,7 +12,6 @@ CEText::CEText() {
     this->addCurrentWindowAsAltered();
     this->lengthWidestLine = 0;
     this->lineBreaksCount = 0;
-    this->wrapCount = 0;
 }
 
 CEText::~CEText() {
@@ -25,28 +24,27 @@ void CEText::recalcLineBreaks() {
     size_t charWidth = this->font->getCharWidth() * this->getSizeMultiplier();
     size_t currentLineLength = 0;
     this->lengthWidestLine = 0;
-    this->wrapCount = 0;
     this->lineBreaksCount = 0;
     for (size_t i = 0; this->text[i] != '\0'; i++) {
+        currentLineLength++;
         if(currentLineLength > this->lengthWidestLine) {
             this->lengthWidestLine = currentLineLength;
         }
-        if(this->text[i] == '\n') {
-            if(currentLineLength * charWidth > availableWidth) {
-                this->wrapCount++;
-            }
+        if(
+            this->text[i] == '\n' ||
+            (((currentLineLength + 1) * charWidth > availableWidth) && this->wrap)
+        ) {
             this->lineBreaksCount++;
             currentLineLength = 0;
             continue;
         }
-        currentLineLength++;
     }
 
     if(currentLineLength > this->lengthWidestLine) {
         this->lengthWidestLine = currentLineLength;
     }
-    if(currentLineLength * charWidth > availableWidth) {
-        this->wrapCount++;
+    if((currentLineLength * charWidth > availableWidth) && this->wrap) {
+        this->lineBreaksCount++;
     }
 }
 
@@ -61,13 +59,11 @@ void CEText::setText(const char *buffer) {
     this->text = this->font->parseString(buffer);
     char *tmp = this->text;
     for (this->length = 0; *(tmp++) != '\0'; this->length++);
-    this->recalcLineBreaks();
     this->addCurrentWindowAsAltered();
 }
 
 void CEText::setWrap(bool wrap) {
     this->wrap = wrap;
-    this->recalcLineBreaks();
     this->addCurrentWindowAsAltered();
 }
 
@@ -75,6 +71,12 @@ void CEText::setBGColor(CEColor color) {
     this->bgColor = color;
     this->bgColorSet = true;
     this->addCurrentWindowAsAltered();
+}
+
+void CEText::addCurrentWindowAsAltered()
+{
+    this->recalcLineBreaks();
+    CEGraphicObject::addCurrentWindowAsAltered();
 }
 
 CEColor CEText::getBGColor() {
@@ -93,11 +95,7 @@ unsigned int CEText::getWidth() {
 
 unsigned int CEText::getHeight() {
     size_t charHeight = this->font->getCharHeight() * this->getSizeMultiplier();
-    if(!this->wrap) {
-        return charHeight * (this->lineBreaksCount + 1);
-    }
-
-    return charHeight * (this->lineBreaksCount + this->wrapCount + 1);
+    return charHeight * (this->lineBreaksCount + 1);
 }
 
 uint8_t CEText::getSizeMultiplier() {
