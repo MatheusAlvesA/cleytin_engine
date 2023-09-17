@@ -2,7 +2,7 @@
 
 CEText::CEText() {
     this->font = new CE8x12Font();
-    this->text = (char *)malloc(1);
+    this->text = new char[1];
     this->text[0] = '\0';
     this->length = 0;
     this->wrap = true;
