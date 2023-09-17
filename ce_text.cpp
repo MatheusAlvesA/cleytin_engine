@@ -97,7 +97,7 @@ unsigned int CEText::getHeight() {
         return charHeight * (this->lineBreaksCount + 1);
     }
 
-    return (charHeight * (this->lineBreaksCount + 1)) + (charHeight * (this->wrapCount + 1));
+    return charHeight * (this->lineBreaksCount + this->wrapCount + 1);
 }
 
 uint8_t CEText::getSizeMultiplier() {
