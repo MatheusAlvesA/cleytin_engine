@@ -9,9 +9,9 @@ CEText::CEText() {
     this->sizeMultiplier = 1;
     this->bgColor = {0xFF, 0xFF, 0xFF};
     this->bgColorSet = false;
-    this->addCurrentWindowAsAltered();
     this->lengthWidestLine = 0;
     this->lineBreaksCount = 0;
+    this->addCurrentWindowAsAltered();
 }
 
 CEText::~CEText() {

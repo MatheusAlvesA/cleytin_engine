@@ -211,6 +211,14 @@ bool CleytinEngine::renderToCanvas()
     std::vector<CERenderWindow *> *optimizedAlteredWindows = optimize_container_windows(alteredWindows);
     delete_pointers_vector<CERenderWindow>(alteredWindows);
 
+    /*
+        Esse for vazio faz o render rodar na metade do tempo
+        em comparação a versão sem o for.
+        TODO: Descobrir o por que disso, deve ter relação com
+        otimizações do compilador
+    */
+    for (size_t i = 0; i < optimizedAlteredWindows->size(); i++);
+
     for (size_t i = 0; i < optimizedAlteredWindows->size(); i++)
     {
         CERenderWindow *w = optimizedAlteredWindows->at(i);
