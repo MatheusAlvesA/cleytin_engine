@@ -15,6 +15,7 @@ public:
     void setSteps(std::vector<CEPoint *> *steps);
     bool isFinished();
     void setDuration(uint64_t duration);
+    void setIsLooping(bool isLooping);
 
 protected:
     std::vector<CEPoint *> *steps;
@@ -22,6 +23,7 @@ protected:
     uint64_t startTime;
     uint64_t totalDistance;
     bool finished;
+    bool isLooping;
 };
 
 #endif

@@ -7,6 +7,11 @@ CEMultiLinearMoveAnimation::CEMultiLinearMoveAnimation()
    this->duration = 0;
    this->startTime = 0;
    this->totalDistance = 0;
+   this->isLooping = false;
+}
+
+void CEMultiLinearMoveAnimation::setIsLooping(bool isLooping) {
+   this->isLooping = isLooping;
 }
 
 void CEMultiLinearMoveAnimation::setSteps(std::vector<CEPoint *> *steps)
@@ -34,7 +39,9 @@ CEMultiLinearMoveAnimation::~CEMultiLinearMoveAnimation()
 void CEMultiLinearMoveAnimation::start()
 {
    this->finished = false;
-   this->object->setPos(0, 0);
+   if(this->steps->size() > 0) {
+      this->object->setPos(this->steps->at(0)->x, this->steps->at(0)->y);
+   }
    this->startTime = esp_timer_get_time();
 }
 
@@ -66,7 +73,11 @@ void CEMultiLinearMoveAnimation::loop()
    {
       CEPoint *lastStep = this->steps->at(this->steps->size() - 1);
       this->object->setPos(lastStep->x, lastStep->y);
-      this->stop();
+      if(this->isLooping) {
+         this->start();
+      } else {
+         this->stop();
+      }
       return;
    }
 
