@@ -2,28 +2,33 @@
 
 CEMultiLinearMoveAnimation::CEMultiLinearMoveAnimation()
 {
-   this->steps = new std::vector<CELine *>();
+   this->steps = new std::vector<CEPoint *>();
    this->finished = true;
    this->duration = 0;
    this->startTime = 0;
+   this->totalDistance = 0;
 }
 
-void CEMultiLinearMoveAnimation::setSteps(std::vector<CELine *> *steps)
+void CEMultiLinearMoveAnimation::setSteps(std::vector<CEPoint *> *steps)
 {
    for (size_t i = 0; i < this->steps->size(); i++)
    {
       delete this->steps->at(i);
    }
    this->steps->clear();
+   this->totalDistance = 0;
    for (size_t i = 0; i < steps->size(); i++)
    {
       this->steps->push_back(steps->at(i)->clone());
+      if(i > 0) {
+         this->totalDistance += this->steps->at(i)->distanceTo(*this->steps->at(i - 1));
+      }
    }
 }
 
 CEMultiLinearMoveAnimation::~CEMultiLinearMoveAnimation()
 {
-   delete_pointers_vector<CELine>(this->steps);
+   delete_pointers_vector<CEPoint>(this->steps);
 }
 
 void CEMultiLinearMoveAnimation::start()
@@ -41,34 +46,44 @@ void CEMultiLinearMoveAnimation::stop()
 
 void CEMultiLinearMoveAnimation::loop()
 {
-   if (this->finished || this->steps->size() <= 0)
+   if (this->finished || this->steps->size() <= 1 || this->duration == 0)
    {
       return;
    }
    uint64_t elapsed = esp_timer_get_time() - this->startTime;
    uint64_t duration = ((uint64_t)this->duration) * 1000;
-   if (elapsed >= duration)
+   float percentage = ((float)elapsed) / duration;
+   uint64_t currentDistance = ((float) this->totalDistance) * percentage;
+   size_t step = 1;
+   uint64_t accDistance = this->steps->at(0)->distanceTo(*this->steps->at(1));
+   for (; step < this->steps->size() - 1 && accDistance < currentDistance; step++)
    {
-      CELine *lastStep = this->steps->at(this->steps->size() - 1);
-      this->object->setPos(lastStep->end->x, lastStep->end->y);
+      accDistance += this->steps->at(step)->distanceTo(*this->steps->at(step+1));
+   }
+   step--;
+
+   if (elapsed >= duration || step >= this->steps->size() - 1)
+   {
+      CEPoint *lastStep = this->steps->at(this->steps->size() - 1);
+      this->object->setPos(lastStep->x, lastStep->y);
       this->stop();
       return;
    }
-   uint64_t stepDuration = duration / this->steps->size();
-   uint64_t step = elapsed / stepDuration;
-   uint64_t stepElapsed = elapsed - (step * stepDuration);
-   CELine *currentStep = this->steps->at(step);
 
-   int x = currentStep->start->x;
-   int y = currentStep->start->y;
+   uint64_t distanceUntilNext = accDistance - currentDistance;
+   CEPoint *currentStep = this->steps->at(step);
+   CEPoint *nextStep = this->steps->at(step + 1);
+   unsigned int distance = currentStep->distanceTo(*nextStep);
+   percentage = ((float) (distance - distanceUntilNext)) / distance; 
 
-   int deltaX = currentStep->end->x - currentStep->start->x;
-   deltaX = (deltaX * stepElapsed) / (deltaX * stepDuration);
-   x += deltaX;
+   int x = currentStep->x;
+   int y = currentStep->y;
 
-   int deltaY = currentStep->end->y - currentStep->start->y;
-   deltaY = (deltaY * stepElapsed) / (deltaY * stepDuration);
-   y += deltaY;
+   float deltaX = (float) (nextStep->x - currentStep->x);
+   x += deltaX * percentage;
+
+   float deltaY = (float) (nextStep->y - currentStep->y);
+   y += deltaY * percentage;
 
    this->object->setPos(x, y);
 }

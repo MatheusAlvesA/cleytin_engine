@@ -12,14 +12,15 @@ public:
     void start();
     void stop();
     void loop();
-    void setSteps(std::vector<CELine *> *steps);
+    void setSteps(std::vector<CEPoint *> *steps);
     bool isFinished();
     void setDuration(uint64_t duration);
 
 protected:
-    std::vector<CELine *> *steps;
+    std::vector<CEPoint *> *steps;
     uint64_t duration;
     uint64_t startTime;
+    uint64_t totalDistance;
     bool finished;
 };
 
