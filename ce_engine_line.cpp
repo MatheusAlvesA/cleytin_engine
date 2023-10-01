@@ -21,3 +21,8 @@ int CELine::getSize()
 {
     return this->start->distanceTo(*this->end);
 }
+
+CELine *CELine::clone()
+{
+    return new CELine(*this->start, *this->end);
+}

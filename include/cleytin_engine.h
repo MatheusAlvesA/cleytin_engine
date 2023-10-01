@@ -15,11 +15,11 @@
 
 typedef enum CEWindowIntersectionSide
 {
-    TOP    = 1,
+    TOP = 1,
     BOTTOM = -1,
-    NONE   = 0,
-    LEFT   = -2,
-    RIGHT  = 2
+    NONE = 0,
+    LEFT = -2,
+    RIGHT = 2
 } CEWindowIntersectionSide;
 
 class CEPoint
@@ -47,6 +47,7 @@ public:
 
     int calculateSideOfPoint(CEPoint *point);
     int getSize();
+    CELine *clone();
 };
 
 class CERenderWindow
@@ -102,7 +103,7 @@ public:
     unsigned int addObject(CEGraphicObject *obj);
     /**
      * @brief Marca um objeto para ser apagado(memória liberada) no início do próximo loop, garantindo que o objeto não será apagado durante o loop atual.
-    */
+     */
     void markToDelete(CEGraphicObject *obj);
     bool removeObject(CEGraphicObject *obj, bool freeMemory = false);
     bool removeObjectAt(size_t index, bool freeMemory = false);
