@@ -115,6 +115,7 @@ public:
     size_t getObjectIndex(CEGraphicObject *obj);
     size_t getObjectsCount();
     std::vector<CEGraphicObject *> *getObjectsOnWindow(CERenderWindow *window);
+    std::vector<CEGraphicObject *> *getObjects();
     bool renderToCanvas();
     uint64_t render();
     uint64_t loop();
