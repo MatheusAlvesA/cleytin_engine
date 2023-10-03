@@ -13,11 +13,6 @@ CEColorBitmapSpriteAnimation::~CEColorBitmapSpriteAnimation() {
    delete this->sprites;
 }
 
-void CEColorBitmapSpriteAnimation::setBitmapObject(CEColorfulBitmap *bitmap) {
-   this->bitmap = bitmap;
-   this->bkpSprite = bitmap->getBuffer();
-}
-
 void CEColorBitmapSpriteAnimation::setFramesFrom(std::vector<const uint16_t *> *sprites) {
    this->sprites->clear();
    for (size_t i = 0; i < sprites->size(); i++) {
@@ -26,18 +21,28 @@ void CEColorBitmapSpriteAnimation::setFramesFrom(std::vector<const uint16_t *> *
 }
 
 void CEColorBitmapSpriteAnimation::start() {
+   this->bitmap = dynamic_cast<CEColorfulBitmap *>(this->object);
+   if(this->bitmap == NULL) {
+      this->bkpSprite = NULL;
+      printf("[ERRO] CEColorBitmapSpriteAnimation::start() - O objeto deve ser um CEColorfulBitmap\n");
+      return;
+   }
    this->finished = false;
    this->bitmap->setBuffer(this->sprites->at(0));
    this->startTime = esp_timer_get_time();
+   this->bkpSprite = bitmap->getBuffer();
 }
 
 void CEColorBitmapSpriteAnimation::stop() {
    this->finished = true;
+   if(this->bitmap == NULL) {
+      return;
+   }
    this->bitmap->setBuffer(this->bkpSprite);
 }
 
 void CEColorBitmapSpriteAnimation::loop() {
-   if(this->finished) {
+   if(this->finished || this->bitmap == NULL) {
       return;
    }
    uint64_t elapsed = esp_timer_get_time() - this->startTime;

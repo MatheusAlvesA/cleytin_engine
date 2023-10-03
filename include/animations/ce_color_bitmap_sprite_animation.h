@@ -14,7 +14,6 @@ public:
     void loop();
     bool isFinished();
     void setDuration(uint64_t duration);
-    void setBitmapObject(CEColorfulBitmap *bitmap);
     void setFramesFrom(std::vector<const uint16_t *> *sprites);
 
 protected:

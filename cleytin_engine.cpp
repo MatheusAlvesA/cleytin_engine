@@ -46,7 +46,7 @@ bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory)
         return false;
     }
 
-    this->alteredWindows.push_back(this->objects[index]->getContainingWindow()->clone());
+    this->alteredWindows.push_back(this->objects[index]->getContainingWindow());
 
     this->objects[index]->beforeRemove(this);
     if (freeMemory)

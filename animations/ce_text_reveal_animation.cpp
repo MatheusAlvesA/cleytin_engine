@@ -30,6 +30,7 @@ void CETextRevealAnimation::prepareTextObject() {
 
    this->textObject = dynamic_cast<CEText *>(this->object);
    if(this->textObject == NULL) {
+      printf("[ERRO] CETextRevealAnimation::start() - O objeto deve ser um CEText\n");
       return;
    }
    this->textLength = strlen(this->textObject->getText());
