@@ -54,12 +54,21 @@ void CEText::setCustomFont(CEFont *font) {
     this->addCurrentWindowAsAltered();
 }
 
-void CEText::setText(const char *buffer) {
+void CEText::setText(const char *buffer, bool parseString) {
     delete this->text;
-    this->text = this->font->parseString(buffer);
+    if(parseString) {
+        this->text = this->font->parseString(buffer);
+    } else {
+        this->text = new char[strlen(buffer) + 1];
+        strcpy(this->text, buffer);
+    }
     char *tmp = this->text;
     for (this->length = 0; *(tmp++) != '\0'; this->length++);
     this->addCurrentWindowAsAltered();
+}
+
+char *CEText::getText() {
+    return this->text;
 }
 
 void CEText::setWrap(bool wrap) {

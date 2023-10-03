@@ -8,7 +8,8 @@ class CEText : public CEGraphicObject {
 public:
     CEText();
     ~CEText();
-    void setText(const char *buffer);
+    void setText(const char *buffer, bool parseString = true);
+    char *getText();
     void setCustomFont(CEFont *font);
     void setWrap(bool wrap);
     unsigned int getWidth();
