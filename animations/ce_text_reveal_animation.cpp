@@ -36,7 +36,6 @@ void CETextRevealAnimation::prepareTextObject() {
    this->textLength = strlen(this->textObject->getText());
    this->bkpTextBuffer = new char[this->textLength + 1];
    strcpy(this->bkpTextBuffer, this->textObject->getText());
-   printf("Text: %s\n", this->bkpTextBuffer);
 }
 
 char *CETextRevealAnimation::getSlice(size_t size) {

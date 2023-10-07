@@ -59,8 +59,9 @@ void CEMultiLinearMoveAnimation::loop()
    }
    uint64_t elapsed = esp_timer_get_time() - this->startTime;
    uint64_t duration = ((uint64_t)this->duration) * 1000;
-   float percentage = ((float)elapsed) / duration;
-   uint64_t currentDistance = ((float) this->totalDistance) * percentage;
+   uint64_t timePerPixel = duration / this->totalDistance;
+   uint64_t currentDistance = elapsed / timePerPixel;
+
    size_t step = 1;
    uint64_t accDistance = this->steps->at(0)->distanceTo(*this->steps->at(1));
    for (; step < this->steps->size() - 1 && accDistance < currentDistance; step++)
@@ -84,8 +85,9 @@ void CEMultiLinearMoveAnimation::loop()
    uint64_t distanceUntilNext = accDistance - currentDistance;
    CEPoint *currentStep = this->steps->at(step);
    CEPoint *nextStep = this->steps->at(step + 1);
-   unsigned int distance = currentStep->distanceTo(*nextStep);
-   percentage = ((float) (distance - distanceUntilNext)) / distance; 
+   unsigned int distanceCurrentToNext = currentStep->distanceTo(*nextStep);
+   unsigned int distanceFromCurrent = (distanceCurrentToNext - distanceUntilNext);
+   float percentage = ((float) distanceFromCurrent) / distanceCurrentToNext; 
 
    int x = currentStep->x;
    int y = currentStep->y;

@@ -24,23 +24,31 @@ void CELinearMoveAnimation::loop() {
    if(this->finished) {
       return;
    }
-   uint64_t elapsed = esp_timer_get_time() - this->startTime;
-   uint64_t duration = ((uint64_t)this->duration) * 1000;
-   int x = this->startX;
-   int y = this->startY;
+   int64_t elapsed = esp_timer_get_time() - this->startTime;
+   int64_t duration = ((uint64_t)this->duration) * 1000;
    if(elapsed >= duration) {
       this->object->setPos(this->endX, this->endY);
       this->finished = true;
+      return;
    }
-   float percentage = (float) ((float)elapsed / duration);
 
-   float deltaX = (float) this->endX - (float) this->startX;
-   deltaX *= percentage;
-   x += (int) deltaX;
+   int distanceX = this->endX - this->startX;
+   int distanceY = this->endY - this->startY;
 
-   float deltaY = (float) this->endY - (float) this->startY;
-   deltaY *= percentage;
-   y += (int) deltaY;
+   int x = this->startX;
+   int y = this->startY;
+
+   if(distanceX != 0) {
+      int64_t timePerPixelX = duration / distanceX;
+      int64_t currentX = elapsed / timePerPixelX;
+      x += currentX;
+   }
+
+   if(distanceY != 0) {
+      int64_t timePerPixelY = duration / distanceY;
+      int64_t currentY = elapsed / timePerPixelY;
+      y += currentY;
+   }
 
    this->object->setPos(x, y);
 }
