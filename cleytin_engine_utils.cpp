@@ -23,12 +23,11 @@ std::vector<CERenderWindow *> *generate_global_container(std::vector<CERenderWin
         if(w->bottomRight->y > maxY) maxY = w->bottomRight->y;
     }
 
-    r->push_back(
-        new CERenderWindow(
-            new CEPoint(minX, minY),
-            new CEPoint(maxX, maxY)
-        )
-    );
+    CEPoint *start = new CEPoint(minX, minY);
+    CEPoint *end = new CEPoint(maxX, maxY);
+    r->push_back(new CERenderWindow(start, end));
+    delete start;
+    delete end;
 
     return r;
 }
