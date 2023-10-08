@@ -23,12 +23,18 @@ unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
 void CleytinEngine::addPendingObjects()
 {
     if(this->toAddObjects.size() <= 0) return;
+    std::vector<CEGraphicObject *> *tmp = new std::vector<CEGraphicObject *>();
     for (size_t i = 0; i < this->toAddObjects.size(); i++)
     {
-        this->objects.push_back(this->toAddObjects[i]);
-        this->toAddObjects[i]->setup(this);
+        tmp->push_back(this->toAddObjects[i]);
     }
     this->toAddObjects.clear();
+    for (size_t i = 0; i < tmp->size(); i++)
+    {
+        this->objects.push_back(tmp->at(i));
+        tmp->at(i)->setup(this);
+    }
+    delete tmp;
     std::sort(this->objects.begin(), this->objects.end(), compareObjectPriority);
 }
 
