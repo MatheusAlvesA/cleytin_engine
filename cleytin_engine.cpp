@@ -144,23 +144,26 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
         return r;
     }
 
-    std::vector<CEPoint *> *targetPoints = object->getAllRenderWindowPoints();
+    CERenderWindow *objWindow = object->getRenderWindow();
+    objWindow->rotate(object->getRotation());
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         if (i == index || !this->objects[i]->getColisionEnabled())
         {
             continue;
         }
-        std::vector<CEPoint *> *candidatePoints = this->objects[i]->getAllRenderWindowPoints();
-        if (
-            object->containsAnyPointsFrom(candidatePoints, 1) ||
-            this->objects[i]->containsAnyPointsFrom(targetPoints, 1))
+        CERenderWindow *candidateWindow = this->objects[i]->getRenderWindow();
+        candidateWindow->rotate(this->objects[i]->getRotation());
+        if (objWindow->doOverlap(
+            candidateWindow,
+            object->getRotation() != 0 || this->objects[i]->getRotation() != 0
+        ))
         {
             r->push_back(i);
         }
-        delete_pointers_vector<CEPoint>(candidatePoints);
+        delete candidateWindow;
     }
-    delete_pointers_vector<CEPoint>(targetPoints);
+    delete objWindow;
 
     return r;
 }
