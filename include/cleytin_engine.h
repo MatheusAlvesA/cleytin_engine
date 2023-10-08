@@ -119,13 +119,16 @@ public:
     bool renderToCanvas();
     uint64_t render();
     uint64_t loop();
+    uint64_t loopAndRender();
 
 private:
     CECanvas *canvas;
     std::vector<CEGraphicObject *> objects;
+    std::vector<CEGraphicObject *> toAddObjects;
     std::vector<CERenderWindow *> alteredWindows;
-    std::vector<CEGraphicObject *> toDeleteIndexes;
+    std::vector<CEGraphicObject *> toDeleteObjects;
     void deleteMarkedObjects();
+    void addPendingObjects();
 };
 
 #endif

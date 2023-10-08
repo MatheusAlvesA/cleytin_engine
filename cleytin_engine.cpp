@@ -16,22 +16,32 @@ CleytinEngine::~CleytinEngine()
 
 unsigned int CleytinEngine::addObject(CEGraphicObject *obj)
 {
-    this->objects.push_back(obj);
+    this->toAddObjects.push_back(obj);
+    return (unsigned int) (this->objects.size() + this->toAddObjects.size());
+}
+
+void CleytinEngine::addPendingObjects()
+{
+    if(this->toAddObjects.size() <= 0) return;
+    for (size_t i = 0; i < this->toAddObjects.size(); i++)
+    {
+        this->objects.push_back(this->toAddObjects[i]);
+        this->toAddObjects[i]->setup(this);
+    }
+    this->toAddObjects.clear();
     std::sort(this->objects.begin(), this->objects.end(), compareObjectPriority);
-    obj->setup(this);
-    return (unsigned int) this->objects.size();
 }
 
 void CleytinEngine::deleteMarkedObjects() {
-    for(int i = 0; i < this->toDeleteIndexes.size(); i++) {
-        this->removeObject(this->toDeleteIndexes[i], true);
+    for(int i = 0; i < this->toDeleteObjects.size(); i++) {
+        this->removeObject(this->toDeleteObjects[i], true);
     }
-    this->toDeleteIndexes.clear();
+    this->toDeleteObjects.clear();
 }
 
 void CleytinEngine::markToDelete(CEGraphicObject *obj)
 {
-    return this->toDeleteIndexes.push_back(obj);
+    return this->toDeleteObjects.push_back(obj);
 }
 
 bool CleytinEngine::removeObject(CEGraphicObject *obj, bool freeMemory)
@@ -255,6 +265,13 @@ bool CleytinEngine::renderToCanvas()
     return true;
 }
 
+uint64_t CleytinEngine::loopAndRender() {
+    uint64_t start = esp_timer_get_time();
+    this->loop();
+    this->render();
+    return esp_timer_get_time() - start;
+}
+
 uint64_t CleytinEngine::render()
 {
     uint64_t start = esp_timer_get_time();
@@ -276,11 +293,13 @@ uint64_t CleytinEngine::render()
 uint64_t CleytinEngine::loop()
 {
     uint64_t start = esp_timer_get_time();
+    this->addPendingObjects();
     this->deleteMarkedObjects();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         this->objects[i]->beforeLoop(this);
     }
+    this->deleteMarkedObjects();
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         this->objects[i]->loop(this);

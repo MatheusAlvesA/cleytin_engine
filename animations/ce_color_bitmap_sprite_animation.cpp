@@ -49,6 +49,7 @@ void CEColorBitmapSpriteAnimation::loop() {
    uint64_t duration = ((uint64_t)this->duration) * 1000;
    if(elapsed >= duration) {
       this->stop();
+      this->bitmap->setBuffer(this->sprites->back());
       return;
    }
    float percentage = (float) ((float)elapsed / duration);
