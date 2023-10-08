@@ -61,13 +61,13 @@ bool CERenderWindow::isZeroSize() {
 }
 
 /**
- * @brief Assumindo que ambas as janelas não foram rotacionadas, esse método retorna se a janela passada tem interseção
- * com a janela atual.
+ * @brief Assumindo que ambas as janelas não foram rotacionadas, esse método retorna o lado
+ * da janela passada que tem uma parte contida dentro da janela atual.
  * 
  * @param window
  * @return CEWindowIntersectionSide
 */
-CEWindowIntersectionSide CERenderWindow::getIntersectionSide(CERenderWindow *window) {
+CEWindowIntersectionSide CERenderWindow::getContainingSide(CERenderWindow *window) {
     if(this->containsPoint(window->topLeft) && this->containsPoint(window->topRight)) {
         return CEWindowIntersectionSide::TOP;
     }
@@ -81,6 +81,34 @@ CEWindowIntersectionSide CERenderWindow::getIntersectionSide(CERenderWindow *win
         return CEWindowIntersectionSide::RIGHT;
     }
     return CEWindowIntersectionSide::NONE;
+}
+
+/**
+ * @brief Assumindo que ambas as janelas não foram rotacionadas, esse método retorna se
+ * existe intersecção entre as janelas.
+ * 
+ * @param window
+ * @return bool
+*/
+bool CERenderWindow::doOverlap(CERenderWindow *window)
+{
+    // Se um está à direita do outro
+    if (
+        this->topLeft->x > window->bottomRight->x ||
+        window->topLeft->x > this->bottomRight->x
+    ) {
+        return false;
+    }
+ 
+    // Se um está acima do outro
+    if (
+        this->bottomRight->y < window->topLeft->y ||
+        window->bottomRight->y < this->topLeft->y
+    ) {
+        return false;
+    }
+ 
+    return true;
 }
 
 void CERenderWindow::setPoints(const CEPoint *start, const CEPoint *end)

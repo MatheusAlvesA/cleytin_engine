@@ -209,7 +209,7 @@ std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow
 }
 
 void remove_intersection(CERenderWindow *main, CERenderWindow *candidate) {
-        CEWindowIntersectionSide side = main->getIntersectionSide(candidate);
+        CEWindowIntersectionSide side = main->getContainingSide(candidate);
         switch (side)
         {
         case CEWindowIntersectionSide::TOP:

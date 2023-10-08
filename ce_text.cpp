@@ -159,13 +159,11 @@ bool CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
 }
 
 bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
-    CERenderWindow *w = this->getRenderWindow();
-    int startX = w->topLeft->x;
+    int startX = window->topLeft->x;
     int cursorX = startX;
-    int cursorY = w->topLeft->y;
-    unsigned int maxX = w->bottomRight->x;
-    unsigned int maxY = w->bottomRight->y;
-    delete w;
+    int cursorY = window->topLeft->y;
+    unsigned int maxX = window->bottomRight->x;
+    unsigned int maxY = window->bottomRight->y;
 
     size_t charWidth = (size_t) this->font->getCharWidth();
     charWidth *= this->getSizeMultiplier();
@@ -174,8 +172,7 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
     bool allRendered = true;
     for (size_t i = 0; this->text[i] != '\0'; i++) {
         if(this->text[i] == '\n') { // Situação especial, quebra de linha
-            size_t nextCharYPos = 0;
-            if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY, nextCharYPos)) {
+            if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY)) {
                 return false;
             }
             continue;
@@ -200,8 +197,7 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
             }
             return false; // Não é mais possível renderizar nada na linha, terminando
         }
-        size_t nextCharYPos = 0;
-        if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY, nextCharYPos)) {
+        if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY)) {
             return false;
         }
     }
@@ -214,11 +210,10 @@ bool CEText::calcBreakLine(
     int &cursorX,
     int startX,
     size_t charHeight,
-    unsigned int maxY,
-    size_t &nextCharYPos
+    unsigned int maxY
 ) {
     // Realizando retorno de carrosel (Wrap)
-    nextCharYPos = ((size_t) cursorY) + charHeight; // Determine a posição y da próxima linha
+    size_t nextCharYPos = ((size_t) cursorY) + charHeight; // Determine a posição y da próxima linha
     if(nextCharYPos > maxY) { // Se o início da próxima linha está fora do limite
         return false; // Termine o render
     }

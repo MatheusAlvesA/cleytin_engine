@@ -84,7 +84,8 @@ public:
 
     bool isZeroSize();
 
-    CEWindowIntersectionSide getIntersectionSide(CERenderWindow *line);
+    CEWindowIntersectionSide getContainingSide(CERenderWindow *window);
+    bool doOverlap(CERenderWindow *window);
 
     bool operator==(const CERenderWindow &window);
     bool operator!=(const CERenderWindow &window);

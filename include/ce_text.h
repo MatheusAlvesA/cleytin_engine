@@ -41,8 +41,7 @@ protected:
         int &cursorX,
         int startX,
         size_t charHeight,
-        unsigned int maxY,
-        size_t &nextCharYPos
+        unsigned int maxY
     );
 };
 

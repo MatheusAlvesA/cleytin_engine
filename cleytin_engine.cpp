@@ -180,25 +180,14 @@ CEGraphicObject *CleytinEngine::getObjectAt(size_t index)
 
 std::vector<CEGraphicObject *> *CleytinEngine::getObjectsOnWindow(CERenderWindow *window) {
     std::vector<CEGraphicObject *> *r = new std::vector<CEGraphicObject *>();
-    std::vector<CEPoint *> *windowPoints = window->getAllPoints();
     for(size_t i = 0; i < this->objects.size(); i++) {
         CEGraphicObject *obj = this->objects[i];
-        std::vector<CEPoint *> *objPoints = obj->getAllRenderWindowPoints();
-        for (size_t j = 0; j < objPoints->size(); j++)
-        {
-            if(
-                window->containsPoint(objPoints->at(j)) ||
-                obj->containsAnyPointsFrom(windowPoints, 1)
-            ) {
-                r->push_back(obj);
-                break;
-            }
+        CERenderWindow *objWindow = obj->getContainingWindow();
+        if(window->doOverlap(objWindow)) {
+            r->push_back(obj);
         }
-        
-        delete_pointers_vector<CEPoint>(objPoints);
+        delete objWindow;
     }
-
-    delete_pointers_vector<CEPoint>(windowPoints);
     return r;
 }
 
