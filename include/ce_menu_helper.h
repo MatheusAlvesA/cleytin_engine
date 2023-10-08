@@ -53,7 +53,7 @@ public:
     void reset();
 
     CERenderWindow* getRenderWindow();
-    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     CleytinControls *ctrl;
@@ -70,9 +70,9 @@ protected:
     uint8_t optionsSizeMultiplier;
     char *title;
 
-    bool renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
-    bool renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
-    bool renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
     unsigned int getOptionHeight();
     size_t getMaxItemsOnCanvas(); 
 };

@@ -160,34 +160,27 @@ bool CERectangle::getFilled() {
     return this->filled;
 }
 
-bool CERectangle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
+void CERectangle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
     int endX = window->bottomRight->x < subWindow->bottomRight->x ? window->bottomRight->x : subWindow->bottomRight->x;
     int endY = window->bottomRight->y < subWindow->bottomRight->y ? window->bottomRight->y : subWindow->bottomRight->y;
 
     unsigned int cursorY = startY;
-    bool allPixelRendered = true;
     while(cursorY < endY) {
         unsigned int cursorX = startX;
         while (cursorX < endX)
         {
-            if(
-                !this->setPixel(
-                    canvas,
-                    cursorX,
-                    cursorY,
-                    (this->filled || cursorX == startX || cursorX == (endX - 1) || cursorY == startY || cursorY == (endY - 1))
-                        ? this->getBaseColor()
-                        : canvas->getBackgroundColor()
-                )
-            ) {
-                allPixelRendered = false;
-            }
+            this->setPixel(
+                canvas,
+                cursorX,
+                cursorY,
+                (this->filled || cursorX == startX || cursorX == (endX - 1) || cursorY == startY || cursorY == (endY - 1))
+                    ? this->getBaseColor()
+                    : canvas->getBackgroundColor()
+            );
             cursorX++;
         }
         cursorY++;
     }
-    
-    return allPixelRendered;
 }

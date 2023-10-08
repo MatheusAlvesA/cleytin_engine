@@ -64,7 +64,7 @@ const uint8_t *CEBitmap::getBuffer() {
     return this->buffer;
 }
 
-bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+void CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
@@ -76,7 +76,6 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
 
     int cursorY = startY - ((startY - window->topLeft->y) % this->getSizeMultiplier());
     unsigned int internalCursorY = offsetY;
-    bool allPixelRendered = true;
     while(cursorY < endY)
     {
         int cursorX = startX - ((startX - window->topLeft->x) % this->getSizeMultiplier());
@@ -92,16 +91,12 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
                     if(!bitSet && this->transparent) {
                         continue;
                     }
-                    if(
-                        !this->setPixel(
-                            canvas,
-                            i + cursorX,
-                            j + cursorY,
-                            bitSet ? this->getBaseColor() : canvas->getBackgroundColor()
-                        )
-                    ) {
-                        allPixelRendered = false;
-                    }
+                    this->setPixel(
+                        canvas,
+                        i + cursorX,
+                        j + cursorY,
+                        bitSet ? this->getBaseColor() : canvas->getBackgroundColor()
+                    );
                 }
             }
             cursorX += this->getSizeMultiplier();
@@ -110,6 +105,4 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
         cursorY += this->getSizeMultiplier();
         internalCursorY++;
     }
-    
-    return allPixelRendered;
 }

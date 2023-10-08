@@ -82,7 +82,7 @@ const uint16_t *CEColorfulBitmap::getBuffer()
     return this->buffer;
 }
 
-bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+void CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
     if(
         this->getSizeMultiplier() == 1 &&
@@ -91,7 +91,8 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
         !this->getNegative() &&
         !this->hasTransparency
     ) {
-        return this->fastRenderToCanvas(canvas, window, subWindow);
+        this->fastRenderToCanvas(canvas, window, subWindow);
+        return;
     }
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
@@ -103,7 +104,6 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
 
     int cursorY = startY - ((startY - window->topLeft->y) % this->getSizeMultiplier());
     unsigned int internalCursorY = offsetY;
-    bool allPixelsRendered = true;
     while (cursorY < endY)
     {
         int cursorX = startX - ((startX - window->topLeft->x) % this->getSizeMultiplier());
@@ -118,16 +118,7 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
                     if(this->buffer[index] == this->alphaColor) {
                         continue;
                     }
-                    if (
-                        !this->setPixel(
-                            canvas,
-                            i + cursorX,
-                            j + cursorY,
-                            this->buffer[index]
-                        ))
-                    {
-                        allPixelsRendered = false;
-                    }
+                    this->setPixel(canvas, i + cursorX, j + cursorY, this->buffer[index]);
                 }
             }
             cursorX += this->getSizeMultiplier();
@@ -136,11 +127,9 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
         cursorY += this->getSizeMultiplier();
         internalCursorY++;
     }
-
-    return allPixelsRendered;
 }
 
-bool CEColorfulBitmap::fastRenderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+void CEColorfulBitmap::fastRenderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
@@ -152,23 +141,11 @@ bool CEColorfulBitmap::fastRenderToCanvas(CECanvas *canvas, CERenderWindow *wind
 
     int cursorY = startY;
     unsigned int internalCursorY = offsetY;
-    bool allPixelsRendered = true;
     while (cursorY < endY)
     {
         unsigned int index = internalCursorY * this->width + offsetX;
-        if (
-            !canvas->setLinePixels(
-                cursorY,
-                startX,
-                endX,
-                this->buffer + index
-            ))
-        {
-            allPixelsRendered = false;
-        }
+        canvas->setLinePixels(cursorY, startX, endX, this->buffer + index);
         cursorY++;
         internalCursorY++;
     }
-
-    return allPixelsRendered;
 }

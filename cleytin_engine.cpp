@@ -101,6 +101,13 @@ void CleytinEngine::clear(bool freeMemory)
         }
     }
     this->objects.clear();
+    for (size_t i = 0; i < this->toAddObjects.size(); i++)
+    {
+        if (freeMemory) {
+            delete this->toAddObjects[i];
+        }
+    }
+    this->toAddObjects.clear();
 
     CEPoint *start = new CEPoint(0, 0);
     CEPoint *end = new CEPoint(this->canvas->getCanvasWidth(), this->canvas->getCanvasHeight());

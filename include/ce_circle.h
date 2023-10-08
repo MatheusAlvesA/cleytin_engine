@@ -15,7 +15,7 @@ public:
     virtual uint16_t getRotation();
 
     CERenderWindow* getRenderWindow();
-    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     unsigned int radius;

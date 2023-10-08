@@ -17,7 +17,7 @@ public:
     unsigned int getHeight();
 
     CERenderWindow* getRenderWindow();
-    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     unsigned int width;

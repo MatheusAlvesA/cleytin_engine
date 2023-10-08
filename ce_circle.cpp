@@ -50,7 +50,7 @@ uint16_t CECircle::getRotation()
     return 0;
 }
 
-bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
+void CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;
     int startY = window->topLeft->y > subWindow->topLeft->y ? window->topLeft->y : subWindow->topLeft->y;
@@ -59,7 +59,6 @@ bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
     CEPoint *center = window->getCenterPoint();
 
     int cursorY = startY;
-    bool allPixelRendered = true;
     while (cursorY <= endY)
     {
         int cursorX = startX;
@@ -71,21 +70,15 @@ bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERender
                 cursorX++;
                 continue;
             }
-            if (
-                !this->setPixel(
+            this->setPixel(
                     canvas,
                     cursorX,
                     cursorY,
                     (this->filled || distanceToCenter == (this->getRadius() - 1))
                         ? this->getBaseColor()
-                        : canvas->getBackgroundColor()))
-            {
-                allPixelRendered = false;
-            }
+                        : canvas->getBackgroundColor());
             cursorX++;
         }
         cursorY++;
     }
-
-    return allPixelRendered;
 }

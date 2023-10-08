@@ -13,8 +13,8 @@ public:
     virtual ~CEGraphicObject();
     virtual CERenderWindow *getDefaultRenderWindow();
     virtual CERenderWindow *getRenderWindow() = 0;
-    virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *subWindow);
-    virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) = 0;
+    virtual void renderToCanvas(CECanvas *canvas, CERenderWindow *subWindow);
+    virtual void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) = 0;
     virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
     virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand = 0);
     virtual std::vector<CEPoint *> *getAllRenderWindowPoints();

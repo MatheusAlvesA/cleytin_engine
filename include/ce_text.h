@@ -20,7 +20,7 @@ public:
     CEColor getBGColor();
 
     CERenderWindow* getRenderWindow();
-    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
+    void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow);
 
 protected:
     char *text;
@@ -33,7 +33,7 @@ protected:
     size_t lineBreaksCount;
     size_t lengthWidestLine;
 
-    bool renderChar(CECanvas *canvas, char c, int x, int y);
+    void renderChar(CECanvas *canvas, char c, int x, int y);
     void recalcLineBreaks();
     void addCurrentWindowAsAltered();
     bool calcBreakLine(

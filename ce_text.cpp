@@ -126,11 +126,10 @@ CERenderWindow* CEText::getRenderWindow() {
     return window;
 }
 
-bool CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
+void CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
     uint8_t *mappedPointer = this->font->getRawPonter() + this->font->getPositionOf(c);
     unsigned int charWidth = this->font->getCharWidth();
     unsigned int charHeight = this->font->getCharHeight();
-    bool r = true;
     CEColor currentBGColor = this->bgColorSet ? this->getBGColor() : canvas->getBackgroundColor();
     for (size_t cursorY = 0; cursorY < charHeight; cursorY++) {
         for (size_t cursorX = 0; cursorX < charWidth; cursorX++) {
@@ -143,22 +142,19 @@ bool CEText::renderChar(CECanvas *canvas, char c, int x, int y) {
                     if(activePixel == 0 && !this->bgColorSet) {
                         continue;
                     }
-                    if(!this->setPixel(
+                    this->setPixel(
                         canvas,
                         i + x + (cursorX * this->getSizeMultiplier()),
                         j + y + (cursorY * this->getSizeMultiplier()),
                         activePixel ? this->getBaseColor() : currentBGColor
-                    )) {
-                        r = false;
-                    }
+                    );
                 }
             }
         }
     }
-    return r;
 }
 
-bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
+void CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) {
     int startX = window->topLeft->x;
     int cursorX = startX;
     int cursorY = window->topLeft->y;
@@ -169,17 +165,16 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
     charWidth *= this->getSizeMultiplier();
     size_t charHeight = (size_t) this->font->getCharHeight();
     charHeight *= this->getSizeMultiplier();
-    bool allRendered = true;
     for (size_t i = 0; this->text[i] != '\0'; i++) {
         if(this->text[i] == '\n') { // Situação especial, quebra de linha
             if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY)) {
-                return false;
+                return;
             }
             continue;
         }
-        if(!this->renderChar(canvas, this->text[i], cursorX, cursorY)) {
-            allRendered = false;
-        }
+
+        this->renderChar(canvas, this->text[i], cursorX, cursorY);
+
         if(this->text[i+1] == '\n') { // O próximo char é uma quebra de linha
             continue; // Não calcule a posição do próximo char, pois ele não renderizará
         }
@@ -195,14 +190,14 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWi
                 cursorX = nextCharXPos; // Avance na linha
                 continue; // Prossiga para renderizar o próximo char
             }
-            return false; // Não é mais possível renderizar nada na linha, terminando
+            return; // Não é mais possível renderizar nada na linha, terminando
         }
         if(!this->calcBreakLine(cursorY, cursorX, startX, charHeight, maxY)) {
-            return false;
+            return;
         }
     }
 
-    return allRendered;
+    return;
 }
 
 bool CEText::calcBreakLine(

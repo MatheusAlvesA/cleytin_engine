@@ -117,16 +117,15 @@ CEColor CEGraphicObject::getBaseColor()
     return this->baseColor;
 }
 
-bool CEGraphicObject::renderToCanvas(CECanvas *canvas, CERenderWindow *subWindow)
+void CEGraphicObject::renderToCanvas(CECanvas *canvas, CERenderWindow *subWindow)
 {
     if (!this->getVisible())
     {
-        return true;
+        return;
     }
     CERenderWindow *w = this->getRenderWindow();
-    bool result = this->renderToCanvas(canvas, w, subWindow);
+    this->renderToCanvas(canvas, w, subWindow);
     delete w;
-    return result;
 }
 
 bool CEGraphicObject::getVisible()
