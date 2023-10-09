@@ -85,7 +85,6 @@ public:
     bool isZeroSize();
 
     CEWindowIntersectionSide getContainingSide(CERenderWindow *window);
-    bool doOverlap(CERenderWindow *window, bool rotated = false);
     bool doOverlapRotated(CERenderWindow *window);
     bool doOverlapNotRotated(CERenderWindow *window);
 

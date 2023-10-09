@@ -83,21 +83,6 @@ CEWindowIntersectionSide CERenderWindow::getContainingSide(CERenderWindow *windo
     return CEWindowIntersectionSide::NONE;
 }
 
-/**
- * @brief Esse método retorna se existe intersecção entre as janelas.
- * 
- * @param window
- * @param rotated Se a janela atual ou a passada estam rotacionadas
- * @return bool
-*/
-bool CERenderWindow::doOverlap(CERenderWindow *window, bool rotated)
-{
-    if(rotated) {
-        return this->doOverlapRotated(window);
-    }
-    return this->doOverlapNotRotated(window);
-}
-
 bool CERenderWindow::doOverlapNotRotated(CERenderWindow *window)
 {
     // Se um está à direita do outro

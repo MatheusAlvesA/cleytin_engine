@@ -154,10 +154,13 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
         }
         CERenderWindow *candidateWindow = this->objects[i]->getRenderWindow();
         candidateWindow->rotate(this->objects[i]->getRotation());
-        if (objWindow->doOverlap(
-            candidateWindow,
-            object->getRotation() != 0 || this->objects[i]->getRotation() != 0
-        ))
+        bool overlap = false;
+        if(this->objects[i]->getRotation() != 0 || object->getRotation() != 0) {
+            overlap = objWindow->doOverlapRotated(candidateWindow);
+        } else {
+            overlap = objWindow->doOverlapNotRotated(candidateWindow);
+        }
+        if (overlap)
         {
             r->push_back(i);
         }
@@ -193,7 +196,7 @@ std::vector<CEGraphicObject *> *CleytinEngine::getObjectsOnWindow(CERenderWindow
     for(size_t i = 0; i < this->objects.size(); i++) {
         CEGraphicObject *obj = this->objects[i];
         CERenderWindow *objWindow = obj->getContainingWindow();
-        if(window->doOverlap(objWindow)) {
+        if(window->doOverlapNotRotated(objWindow)) {
             r->push_back(obj);
         }
         delete objWindow;

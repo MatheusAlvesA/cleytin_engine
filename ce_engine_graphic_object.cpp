@@ -338,6 +338,9 @@ std::vector<CERenderWindow *> *CEGraphicObject::getAlteredWindows()
 CERenderWindow *CEGraphicObject::getContainingWindow()
 {
     CERenderWindow *w = this->getRenderWindow();
+    if(this->getRotation() == 0) {
+        return w;
+    }
     w->rotate(this->getRotation());
     int minX = w->topLeft->x;
     int minY = w->topLeft->y;
