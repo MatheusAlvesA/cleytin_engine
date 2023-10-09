@@ -44,7 +44,7 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         bool contained = false;
         for (size_t j = 0; j < list->size(); j++)
         {
-            if(j == i) continue;
+            if(j == i || !list->at(j)->doOverlapNotRotated(candidate)) continue;
             if(in_array<size_t>(j, processedIndexes)) continue;
             if(
                 *list->at(j) == *candidate ||
@@ -59,6 +59,9 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         // Testando se alguma janela já adicionada contém a janela candidata
         for (size_t j = 0; j < r->size(); j++)
         {
+            if(!list->at(j)->doOverlapNotRotated(candidate)) {
+                continue;
+            }
             if(
                 *r->at(j) == *candidate ||
                 r->at(j)->containsWindow(candidate)
@@ -151,6 +154,9 @@ CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWin
 }
 
 CERenderWindow *fuse_container(CERenderWindow *container, CERenderWindow *candidate) {
+    if(!container->doOverlapNotRotated(candidate)) {
+        return NULL;
+    }
     CERenderWindow *fused = NULL;
     fused = fuse_container_from_top(container, candidate);
     if(fused != NULL) {
@@ -240,7 +246,11 @@ std::vector<CERenderWindow *> *remove_intersections(std::vector<CERenderWindow *
         CERenderWindow *candidate = list->at(i);
         for (size_t j = 0; j < list->size(); j++)
         {
-            if(j == i || in_array<size_t>(j, invalidIndexes)) continue;
+            if(
+                j == i ||
+                !list->at(j)->doOverlapNotRotated(candidate) ||
+                in_array<size_t>(j, invalidIndexes)
+            ) continue;
 
             remove_intersection(list->at(j), candidate);
             if(
@@ -263,7 +273,7 @@ std::vector<CERenderWindow *> *remove_intersections(std::vector<CERenderWindow *
 }
 
 std::vector<CERenderWindow *> *optimize_container_windows(std::vector<CERenderWindow *> *list) {
-    if(list->size() > 3) {
+    if(list->size() > 10) {
         return generate_global_container(list);
     }
 
