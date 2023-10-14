@@ -6,7 +6,7 @@ CEGraphicObject::CEGraphicObject()
     this->colisionEnabled = true;
     this->visible = true;
     this->mirrored = false;
-    this->negative = false;
+    this->pixelShaderBeforeEfects = NULL;
     this->priority = 0;
     this->posX = 0;
     this->posY = 0;
@@ -37,9 +37,8 @@ void CEGraphicObject::setMirrored(bool mirrored)
     this->addCurrentWindowAsAltered();
 }
 
-void CEGraphicObject::setNegative(bool negative)
-{
-    this->negative = negative;
+void CEGraphicObject::setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback) {
+    this->pixelShaderBeforeEfects = callback;
     this->addCurrentWindowAsAltered();
 }
 
@@ -134,11 +133,6 @@ bool CEGraphicObject::getMirrored()
     return this->mirrored;
 }
 
-bool CEGraphicObject::getNegative()
-{
-    return this->negative;
-}
-
 bool CEGraphicObject::getColisionEnabled()
 {
     return this->colisionEnabled;
@@ -188,22 +182,19 @@ void CEGraphicObject::mirrorPixel(int &x)
 
 bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color)
 {
+    if (x < 0 || y < 0) return false;
+
+    if(this->pixelShaderBeforeEfects != NULL) {
+        this->pixelShaderBeforeEfects(this, posX, posY, &color);
+    }
+
     if (this->getMirrored())
     {
         this->mirrorPixel(x);
     }
 
-    if (x < 0 || y < 0)
-    {
-        return false;
-    }
     unsigned int posX = (unsigned int)x;
     unsigned int posY = (unsigned int)y;
-
-    if (this->getNegative())
-    {
-        color = -color;
-    }
 
     canvas->setPixel(posX, posY, color);
 
@@ -212,26 +203,23 @@ bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color)
 
 bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, uint16_t color)
 {
+    if (x < 0 || y < 0) return false;
+
+    if(this->pixelShaderBeforeEfects != NULL) {
+        CEColor colorStruct = RGB565ToColor(color);
+        this->pixelShaderBeforeEfects(this, posX, posY, &colorStruct);
+        color = colorToRGB565(colorStruct);
+    }
+
     if (this->getMirrored())
     {
         this->mirrorPixel(x);
     }
 
-    if (x < 0 || y < 0)
-    {
-        return false;
-    }
     unsigned int posX = (unsigned int)x;
     unsigned int posY = (unsigned int)y;
 
-    if (this->getNegative())
-    {
-        CEColor colorStruct = RGB565ToColor(color);
-        colorStruct = -colorStruct;
-        canvas->setPixel(posX, posY, colorStruct);
-    } else {
-        canvas->setPixel(posX, posY, color);
-    }
+    canvas->setPixel(posX, posY, color);
 
     return true;
 }

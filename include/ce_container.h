@@ -40,7 +40,7 @@ public:
     void setAlignY(CEAlign align);
 
     void setMirrored(bool mirrored);
-    void setNegative(bool negative);
+    void setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback);
 
     void onObjectUpdated();
 

@@ -21,7 +21,7 @@ public:
     // Setters
     virtual void setVisible(bool visible);
     virtual void setMirrored(bool mirrored);
-    virtual void setNegative(bool negative);
+    virtual void setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback);
     virtual void setColisionEnabled(bool enabled);
     virtual void setPriority(unsigned int priority);
     virtual void setPosX(int x);
@@ -33,7 +33,6 @@ public:
     // Getters
     virtual bool getVisible();
     virtual bool getMirrored();
-    virtual bool getNegative();
     virtual bool getColisionEnabled();
     virtual unsigned int getPriority();
     virtual int getPosX();
@@ -56,7 +55,6 @@ protected:
     bool visible;
     bool colisionEnabled;
     bool mirrored;
-    bool negative;
     unsigned int priority;
     int posX;
     int posY;
@@ -64,6 +62,7 @@ protected:
     unsigned int maxY;
     CEColor baseColor;
     std::vector<CERenderWindow *> *alteredWindows;
+    std::function<void(CEGraphicObject*, int, int, CEColor *)> pixelShaderBeforeEfects;
 
     bool setPixel(CECanvas *canvas, int x, int y, CEColor color);
     bool setPixel(CECanvas *canvas, int x, int y, uint16_t color);

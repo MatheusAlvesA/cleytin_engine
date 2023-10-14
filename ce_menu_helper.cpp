@@ -93,8 +93,8 @@ void CEMenuHelper::setMirrored(bool mirrored) {
     this->mirrored = false; // Sem suporte a espelhamento
 }
 
-void CEMenuHelper::setNegative(bool negative) {
-    this->negative = false; // Sem suporte a negativo
+void CEMenuHelper::setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback) {
+    // Sem suporte a shader para menu
 }
 
 void CEMenuHelper::addOption(const char *label, uint id) {

@@ -22,8 +22,8 @@ void CEContainer::setMirrored(bool mirrored) {
     this->mirrored = false;
 }
 
-void CEContainer::setNegative(bool negative) {
-    this->negative = false;
+void CEContainer::setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback) {
+    // Sem suporte a shader para containers
 }
 
 void CEContainer::onObjectUpdated() {

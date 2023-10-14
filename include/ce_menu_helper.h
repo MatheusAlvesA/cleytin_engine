@@ -27,7 +27,7 @@ public:
     uint getSelected();
 
     void setMirrored(bool mirrored);
-    void setNegative(bool negative);
+    void setPixelShaderBeforeEfects(std::function<void(CEGraphicObject*, int, int, CEColor *)> callback);
   
     void setHighlightBGColor(CEColor color);
     void setHighlightTextColor(CEColor color);
