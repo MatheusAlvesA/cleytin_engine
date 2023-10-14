@@ -26,19 +26,12 @@ bool in_array(T needle, std::vector<T> *haystack) {
     return false;
 }
 
-CERenderWindow *fuse_container_from_top(CERenderWindow *container, CERenderWindow *candidate);
-
-CERenderWindow *fuse_container_from_bottom(CERenderWindow *container, CERenderWindow *candidate);
-
-CERenderWindow *fuse_container_from_left(CERenderWindow *container, CERenderWindow *candidate);
-
-CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWindow *candidate);
+CERenderWindow *fuse_container_dislocated(CERenderWindow *container, CERenderWindow *candidate);
 
 CERenderWindow *fuse_container(CERenderWindow *container, CERenderWindow *candidate);
 
 std::vector<CERenderWindow *> *fuse_container_windows(std::vector<CERenderWindow *> *list);
 
 std::vector<CERenderWindow *> *optimize_container_windows(std::vector<CERenderWindow *> *list);
-
 
 #endif

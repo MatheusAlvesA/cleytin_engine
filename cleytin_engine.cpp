@@ -226,8 +226,11 @@ bool CleytinEngine::renderToCanvas()
         return false;
     }
 
-    std::vector<CERenderWindow *> *optimizedAlteredWindows = optimize_container_windows(alteredWindows);
-    delete_pointers_vector<CERenderWindow>(alteredWindows);
+    std::vector<CERenderWindow *> *optimizedAlteredWindows = alteredWindows;
+    if(alteredWindows->size() > 1) {
+        optimizedAlteredWindows = optimize_container_windows(alteredWindows);
+        delete_pointers_vector<CERenderWindow>(alteredWindows);
+    }
 
     for (size_t i = 0; i < optimizedAlteredWindows->size(); i++)
     {

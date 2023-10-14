@@ -85,57 +85,27 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
     return r;
 }
 
-CERenderWindow *fuse_container_from_top(CERenderWindow *container, CERenderWindow *candidate) {
+CERenderWindow *fuse_container_dislocated(CERenderWindow *container, CERenderWindow *candidate) {
+    int deltaTLX = container->topLeft->x - candidate->topLeft->x;
+    int deltaTLY = container->topLeft->y - candidate->topLeft->y;
+    int deltaBRX = container->bottomRight->x - candidate->bottomRight->x;
+    int deltaBRY = container->bottomRight->y - candidate->bottomRight->y;
+
+
     if(
-        container->topLeft->x == candidate->topLeft->x &&
-        container->bottomRight->x == candidate->bottomRight->x &&
-        container->topLeft->y <= candidate->bottomRight->y &&
-        container->topLeft->y >= candidate->topLeft->y &&
-        container->bottomRight->y >= candidate->bottomRight->y
+        // Se as janelas foram muito deslocadas, então não vale a pena
+        (deltaTLX > -10 && deltaTLY > -10 && deltaTLX < 10 && deltaTLY < 10) &&
+        (deltaBRX > -10 && deltaBRY > -10 && deltaBRX < 10 && deltaBRY < 10)
     ) {
-        return new CERenderWindow(candidate->topLeft, container->bottomRight);
-    }
-
-    return NULL;
-}
-
-CERenderWindow *fuse_container_from_bottom(CERenderWindow *container, CERenderWindow *candidate) {
-    if(
-        candidate->topLeft->x == container->topLeft->x &&
-        candidate->bottomRight->x == container->bottomRight->x &&
-        candidate->topLeft->y <= container->bottomRight->y &&
-        candidate->topLeft->y >= container->topLeft->y &&
-        candidate->bottomRight->y >= container->bottomRight->y
-    ) {
-        return new CERenderWindow(container->topLeft, candidate->bottomRight);
-    }
-
-    return NULL;
-}
-
-CERenderWindow *fuse_container_from_left(CERenderWindow *container, CERenderWindow *candidate) {
-    if(
-        candidate->topLeft->y == container->topLeft->y &&
-        candidate->bottomRight->y == container->bottomRight->y &&
-        candidate->topLeft->x <= container->bottomRight->x &&
-        candidate->topLeft->x >= container->topLeft->x &&
-        candidate->bottomRight->x >= container->bottomRight->x
-    ) {
-        return new CERenderWindow(container->topLeft, candidate->bottomRight);
-    }
-
-    return NULL;
-}
-
-CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWindow *candidate) {
-    if(
-        container->topLeft->y == candidate->topLeft->y &&
-        container->bottomRight->y == candidate->bottomRight->y &&
-        container->topLeft->x <= candidate->bottomRight->x &&
-        container->topLeft->x >= candidate->topLeft->x &&
-        container->bottomRight->x >= candidate->bottomRight->x
-    ) {
-        return new CERenderWindow(candidate->topLeft, container->bottomRight);
+        CEPoint start(
+            deltaTLX > 0 ? candidate->topLeft->x : container->topLeft->x,
+            deltaTLY > 0 ? candidate->topLeft->y : container->topLeft->y
+        );
+        CEPoint end(
+            deltaBRX > 0 ? container->bottomRight->x : candidate->bottomRight->x,
+            deltaBRY > 0 ? container->bottomRight->y : candidate->bottomRight->y
+        );
+        return new CERenderWindow(&start, &end);
     }
 
     return NULL;
@@ -146,19 +116,7 @@ CERenderWindow *fuse_container(CERenderWindow *container, CERenderWindow *candid
         return NULL;
     }
     CERenderWindow *fused = NULL;
-    fused = fuse_container_from_top(container, candidate);
-    if(fused != NULL) {
-        return fused;
-    }
-    fused = fuse_container_from_bottom(container, candidate);
-    if(fused != NULL) {
-        return fused;
-    }
-    fused = fuse_container_from_left(container, candidate);
-    if(fused != NULL) {
-        return fused;
-    }
-    fused = fuse_container_from_right(container, candidate);
+    fused = fuse_container_dislocated(container, candidate);
     if(fused != NULL) {
         return fused;
     }
