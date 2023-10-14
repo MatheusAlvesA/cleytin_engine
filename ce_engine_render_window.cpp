@@ -136,8 +136,8 @@ bool CERenderWindow::containsPoint(CEPoint *point)
 {
     return point->x >= this->topLeft->x &&
            point->x <= this->bottomRight->x &&
-           point->y >= this->bottomRight->y &&
-           point->y <= this->topLeft->y;
+           point->y <= this->bottomRight->y &&
+           point->y >= this->topLeft->y;
 }
 
 bool CERenderWindow::containsWindow(CERenderWindow *window) {
@@ -165,7 +165,7 @@ void CERenderWindow::expand(unsigned int size)
 
 size_t CERenderWindow::getHeight()
 {
-    return this->topLeft->y - this->bottomRight->y;
+    return this->bottomRight->y - this->topLeft->y;
 }
 
 size_t CERenderWindow::getWidth()
