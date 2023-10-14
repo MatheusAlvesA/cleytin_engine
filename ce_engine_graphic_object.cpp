@@ -57,6 +57,7 @@ void CEGraphicObject::setPriority(unsigned int priority)
 
 void CEGraphicObject::setPosX(int posX)
 {
+    if(posX == this->posX) return;
     this->addCurrentWindowAsAltered();
     this->posX = posX;
     this->addCurrentWindowAsAltered();
@@ -64,6 +65,7 @@ void CEGraphicObject::setPosX(int posX)
 
 void CEGraphicObject::setPosY(int posY)
 {
+    if(posY == this->posY) return;
     this->addCurrentWindowAsAltered();
     this->posY = posY;
     this->addCurrentWindowAsAltered();
@@ -93,6 +95,7 @@ unsigned int CEGraphicObject::getMaxY()
 
 void CEGraphicObject::setPos(int x, int y)
 {
+    if(x == this->posX && y == this->posY) return;
     this->addCurrentWindowAsAltered();
     this->posX = x;
     this->posY = y;
@@ -181,15 +184,6 @@ void CEGraphicObject::mirrorPixel(int &x)
     delete c;
 
     x = (centerX - x) + centerX;
-}
-
-std::vector<CEPoint *> *CEGraphicObject::getAllRenderWindowPoints()
-{
-    CERenderWindow *w = this->getRenderWindow();
-    std::vector<CEPoint *> *r = w->getAllPoints();
-    delete w;
-
-    return r;
 }
 
 bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color)
@@ -304,19 +298,15 @@ void CEGraphicObject::addCurrentWindowAsAltered()
 bool CEGraphicObject::addAlteredWindow(CERenderWindow *w) {
     if(w->topLeft->x < 0) {
         w->topLeft->x = 0;
-        w->bottomLeft->x = 0;
     }
     if(w->topLeft->y < 0) {
         w->topLeft->y = 0;
-        w->topRight->y = 0;
     }
     if(w->bottomRight->x > this->maxX) {
         w->bottomRight->x = this->maxX;
-        w->topRight->x = this->maxX;
     }
     if(w->bottomRight->y > this->maxY) {
         w->bottomRight->y = this->maxY;
-        w->bottomLeft->y = this->maxY;
     }
 
     if(

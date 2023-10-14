@@ -87,70 +87,58 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
 
 CERenderWindow *fuse_container_from_top(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        container->topLeft->x != candidate->bottomLeft->x ||
-        container->topRight->x != candidate->bottomRight->x ||
-        container->topLeft->y > candidate->bottomLeft->y ||
-        container->topLeft->y < candidate->topLeft->y ||
-        container->topRight->y > candidate->bottomRight->y ||
-        container->topRight->y < candidate->topRight->y
+        container->topLeft->x == candidate->topLeft->x &&
+        container->bottomRight->x == candidate->bottomRight->x &&
+        container->topLeft->y <= candidate->bottomRight->y &&
+        container->topLeft->y >= candidate->topLeft->y &&
+        container->bottomRight->y >= candidate->bottomRight->y
     ) {
-        // Não é possível fundir as janelas
-        return NULL;
+        return new CERenderWindow(candidate->topLeft, container->bottomRight);
     }
 
-    CERenderWindow *r = new CERenderWindow(candidate->topLeft, container->bottomRight);
-    return r;
+    return NULL;
 }
 
 CERenderWindow *fuse_container_from_bottom(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        container->bottomLeft->x != candidate->topLeft->x ||
-        container->bottomRight->x != candidate->topRight->x ||
-        container->bottomLeft->y < candidate->topLeft->y ||
-        container->bottomLeft->y > candidate->bottomLeft->y ||
-        container->bottomRight->y < candidate->topRight->y ||
-        container->bottomRight->y > candidate->bottomRight->y
+        candidate->topLeft->x == container->topLeft->x &&
+        candidate->bottomRight->x == container->bottomRight->x &&
+        candidate->topLeft->y <= container->bottomRight->y &&
+        candidate->topLeft->y >= container->topLeft->y &&
+        candidate->bottomRight->y >= container->bottomRight->y
     ) {
-        // Não é possível fundir as janelas
-        return NULL;
+        return new CERenderWindow(container->topLeft, candidate->bottomRight);
     }
 
-    CERenderWindow *r = new CERenderWindow(container->topLeft, candidate->bottomRight);
-    return r;
+    return NULL;
 }
 
 CERenderWindow *fuse_container_from_left(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        container->topLeft->y != candidate->topRight->y ||
-        container->bottomLeft->y != candidate->bottomRight->y ||
-        container->topLeft->x > candidate->topRight->x ||
-        container->topLeft->x < candidate->topLeft->x ||
-        container->bottomLeft->x > candidate->bottomRight->x ||
-        container->bottomLeft->x < candidate->bottomLeft->x
+        candidate->topLeft->y == container->topLeft->y &&
+        candidate->bottomRight->y == container->bottomRight->y &&
+        candidate->topLeft->x <= container->bottomRight->x &&
+        candidate->topLeft->x >= container->topLeft->x &&
+        candidate->bottomRight->x >= container->bottomRight->x
     ) {
-        // Não é possível fundir as janelas
-        return NULL;
+        return new CERenderWindow(container->topLeft, candidate->bottomRight);
     }
 
-    CERenderWindow *r = new CERenderWindow(candidate->topLeft, container->bottomRight);
-    return r;
+    return NULL;
 }
 
 CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWindow *candidate) {
     if(
-        container->topRight->y != candidate->topLeft->y ||
-        container->bottomRight->y != candidate->bottomLeft->y ||
-        container->topRight->x < candidate->topLeft->x ||
-        container->topRight->x > candidate->topRight->x ||
-        container->bottomRight->x < candidate->bottomLeft->x ||
-        container->bottomRight->x > candidate->bottomRight->x
+        container->topLeft->y == candidate->topLeft->y &&
+        container->bottomRight->y == candidate->bottomRight->y &&
+        container->topLeft->x <= candidate->bottomRight->x &&
+        container->topLeft->x >= candidate->topLeft->x &&
+        container->bottomRight->x >= candidate->bottomRight->x
     ) {
-        // Não é possível fundir as janelas
-        return NULL;
+        return new CERenderWindow(candidate->topLeft, container->bottomRight);
     }
 
-    CERenderWindow *r = new CERenderWindow(container->topLeft, candidate->bottomRight);
-    return r;
+    return NULL;
 }
 
 CERenderWindow *fuse_container(CERenderWindow *container, CERenderWindow *candidate) {
@@ -218,16 +206,16 @@ void remove_intersection(CERenderWindow *main, CERenderWindow *candidate) {
         switch (side)
         {
         case CEWindowIntersectionSide::TOP:
-            candidate->topRight->y = candidate->topLeft->y = main->bottomLeft->y;
+            candidate->topLeft->y = main->bottomRight->y;
             break;
         case CEWindowIntersectionSide::BOTTOM:
-            candidate->bottomRight->y = candidate->bottomLeft->y = main->topLeft->y;
+            candidate->bottomRight->y = main->topLeft->y;
             break;
         case CEWindowIntersectionSide::LEFT:
-            candidate->topLeft->x = candidate->bottomLeft->x = main->topRight->x;
+            candidate->topLeft->x = main->bottomRight->x;
             break;
         case CEWindowIntersectionSide::RIGHT:
-            candidate->topRight->x = candidate->bottomRight->x = main->topLeft->x;
+            candidate->bottomRight->x = main->topLeft->x;
             break;
         
         default:

@@ -36,27 +36,12 @@ public:
     unsigned int distanceTo(const CEPoint point);
 };
 
-class CELine
-{
-public:
-    CELine(const CEPoint &start, const CEPoint &end);
-    ~CELine();
-    CEPoint *start;
-    CEPoint *end;
-
-    int calculateSideOfPoint(CEPoint *point);
-    int getSize();
-    CELine *clone();
-};
-
 class CERenderWindow
 {
 public:
     CERenderWindow(const CEPoint *start, const CEPoint *end);
     ~CERenderWindow();
     CEPoint *topLeft;
-    CEPoint *topRight;
-    CEPoint *bottomLeft;
     CEPoint *bottomRight;
 
     void setPoints(const CEPoint *start, const CEPoint *end);
@@ -64,14 +49,9 @@ public:
     void setMaxY(unsigned int y);
 
     CEPoint *getCenterPoint();
-    CELine *getTopLine();
-    CELine *getBottomLine();
-    CELine *getLeftLine();
-    CELine *getRightLine();
     size_t getHeight();
     size_t getWidth();
-
-    std::vector<CEPoint *> *getAllPoints();
+    size_t getArea();
 
     bool containsPoint(CEPoint *point);
     bool containsWindow(CERenderWindow *window);

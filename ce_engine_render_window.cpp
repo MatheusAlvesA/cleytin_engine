@@ -5,8 +5,6 @@ CERenderWindow::CERenderWindow(const CEPoint *start, const CEPoint *end)
 {
     this->topLeft = NULL;
     this->bottomRight = NULL;
-    this->topRight = NULL;
-    this->bottomLeft = NULL;
     this->setPoints(start, end);
     this->maxX = LCD_WIDTH_PIXELS;
     this->maxY = LCD_HEIGHT_PIXELS;
@@ -15,17 +13,13 @@ CERenderWindow::CERenderWindow(const CEPoint *start, const CEPoint *end)
 bool CERenderWindow::operator==(const CERenderWindow &window)
 {
     return this->topLeft == window.topLeft &&
-           this->bottomRight == window.bottomRight &&
-           this->topRight == window.topRight &&
-           this->bottomLeft == window.bottomLeft;
+           this->bottomRight == window.bottomRight;
 }
 
 bool CERenderWindow::operator!=(const CERenderWindow &window)
 {
     return this->topLeft != window.topLeft ||
-           this->bottomRight != window.bottomRight ||
-           this->topRight != window.topRight ||
-           this->bottomLeft != window.bottomLeft;
+           this->bottomRight != window.bottomRight;
 }
 
 void CERenderWindow::setMaxX(unsigned int x)
@@ -39,25 +33,8 @@ void CERenderWindow::setMaxY(unsigned int y)
 }
 
 bool CERenderWindow::isZeroSize() {
-    CELine *topLine = this->getTopLine();
-    CELine *bottomLine = this->getBottomLine();
-    CELine *leftLine = this->getLeftLine();
-    CELine *rightLine = this->getRightLine();
-
-    bool r = false;
-    if(
-        (topLine->getSize() == 0 && bottomLine->getSize() == 0) ||
-        (leftLine->getSize() == 0 && rightLine->getSize() == 0)
-    ) {
-        r = true;
-    }
-
-    delete topLine;
-    delete bottomLine;
-    delete leftLine;
-    delete rightLine;
-
-    return r;
+    return this->topLeft->x == this->bottomRight->x &&
+        this->topLeft->y == this->bottomRight->y;
 }
 
 /**
@@ -67,16 +44,18 @@ bool CERenderWindow::isZeroSize() {
  * @return CEWindowIntersectionSide
 */
 CEWindowIntersectionSide CERenderWindow::getContainingSide(CERenderWindow *window) {
-    if(this->containsPoint(window->topLeft) && this->containsPoint(window->topRight)) {
+    CEPoint tr(window->bottomRight->x, window->topLeft->y);
+    CEPoint bl(window->topLeft->x, window->bottomRight->y);
+    if(this->containsPoint(window->topLeft) && this->containsPoint(&tr)) {
         return CEWindowIntersectionSide::TOP;
     }
-    if(this->containsPoint(window->bottomLeft) && this->containsPoint(window->bottomRight)) {
+    if(this->containsPoint(&bl) && this->containsPoint(window->bottomRight)) {
         return CEWindowIntersectionSide::BOTTOM;
     }
-    if(this->containsPoint(window->topLeft) && this->containsPoint(window->bottomLeft)) {
+    if(this->containsPoint(window->topLeft) && this->containsPoint(&bl)) {
         return CEWindowIntersectionSide::LEFT;
     }
-    if(this->containsPoint(window->topRight) && this->containsPoint(window->bottomRight)) {
+    if(this->containsPoint(&tr) && this->containsPoint(window->bottomRight)) {
         return CEWindowIntersectionSide::RIGHT;
     }
     return CEWindowIntersectionSide::NONE;
@@ -117,24 +96,24 @@ void CERenderWindow::setPoints(const CEPoint *start, const CEPoint *end)
     }
     this->bottomRight = new CEPoint(end->x, end->y);
 
-    if (this->topRight)
+    if (this->topLeft->x > this->bottomRight->x)
     {
-        delete this->topRight;
+        unsigned int tlX = this->topLeft->x;
+        this->topLeft->x = this->bottomRight->x;
+        this->bottomRight->x = tlX;
     }
-    this->topRight = new CEPoint(end->x, start->y);
 
-    if (this->bottomLeft)
+    if (this->topLeft->y > this->bottomRight->y)
     {
-        delete this->bottomLeft;
+        unsigned int tlY = this->topLeft->y;
+        this->topLeft->y = this->bottomRight->y;
+        this->bottomRight->y = tlY;
     }
-    this->bottomLeft = new CEPoint(start->x, end->y);
 }
 
 CERenderWindow::~CERenderWindow()
 {
     delete this->topLeft;
-    delete this->topRight;
-    delete this->bottomLeft;
     delete this->bottomRight;
 }
 
@@ -145,132 +124,30 @@ CEPoint *CERenderWindow::getCenterPoint()
         ((this->bottomRight->y - this->topLeft->y) / 2) + this->topLeft->y);
 }
 
-CELine *CERenderWindow::getTopLine()
-{
-    CEPoint *start = new CEPoint(this->topRight->x, this->topRight->y);
-    CEPoint *end = new CEPoint(this->topLeft->x, this->topLeft->y);
-    CELine *r = new CELine(*start, *end);
-    delete start;
-    delete end;
-    return r;
-}
-
-CELine *CERenderWindow::getBottomLine()
-{
-    CEPoint *start = new CEPoint(this->bottomLeft->x, this->bottomLeft->y);
-    CEPoint *end = new CEPoint(this->bottomRight->x, this->bottomRight->y);
-    CELine *r = new CELine(*start, *end);
-    delete start;
-    delete end;
-    return r;
-}
-
-CELine *CERenderWindow::getLeftLine()
-{
-    CEPoint *start = new CEPoint(this->topLeft->x, this->topLeft->y);
-    CEPoint *end = new CEPoint(this->bottomLeft->x, this->bottomLeft->y);
-    CELine *r = new CELine(*start, *end);
-    delete start;
-    delete end;
-    return r;
-}
-
-CELine *CERenderWindow::getRightLine()
-{
-    CEPoint *start = new CEPoint(this->bottomRight->x, this->bottomRight->y);
-    CEPoint *end = new CEPoint(this->topRight->x, this->topRight->y);
-    CELine *r = new CELine(*start, *end);
-    delete start;
-    delete end;
-    return r;
-}
-
 void CERenderWindow::resetToStartPosition()
 {
-    int offsetX = this->topLeft->x;
-    int offsetY = this->topLeft->y;
-    this->topLeft->x -= offsetX;
-    this->topLeft->y -= offsetY;
-    this->topRight->x -= offsetX;
-    this->topRight->y -= offsetY;
-    this->bottomLeft->x -= offsetX;
-    this->bottomLeft->y -= offsetY;
-    this->bottomRight->x -= offsetX;
-    this->bottomRight->y -= offsetY;
+    this->bottomRight->x -= this->topLeft->x;
+    this->bottomRight->y -= this->topLeft->y;
+    this->topLeft->x = 0;
+    this->topLeft->y = 0;
 }
 
 bool CERenderWindow::containsPoint(CEPoint *point)
 {
-    CELine *topLine = this->getTopLine();
-    CELine *bottomLine = this->getBottomLine();
-    CELine *leftLine = this->getLeftLine();
-    CELine *rightLine = this->getRightLine();
-
-    int relativeTop = topLine->calculateSideOfPoint(point);
-    int relativeBottom = bottomLine->calculateSideOfPoint(point);
-    int relativeLeft = leftLine->calculateSideOfPoint(point);
-    int relativeRight = rightLine->calculateSideOfPoint(point);
-
-    bool r = false;
-    if (
-        (
-            relativeTop >= 0 &&
-            relativeBottom >= 0 &&
-            relativeLeft >= 0 &&
-            relativeRight >= 0) ||
-        (relativeTop <= 0 &&
-         relativeBottom <= 0 &&
-         relativeLeft <= 0 &&
-         relativeRight <= 0))
-    {
-        r = true;
-    }
-
-    delete topLine;
-    delete bottomLine;
-    delete leftLine;
-    delete rightLine;
-
-    return r;
+    return point->x >= this->topLeft->x &&
+           point->x <= this->bottomRight->x &&
+           point->y >= this->bottomRight->y &&
+           point->y <= this->topLeft->y;
 }
 
 bool CERenderWindow::containsWindow(CERenderWindow *window) {
-    return this->containsPoint(window->topLeft) &&
-        this->containsPoint(window->topRight) &&
-        this->containsPoint(window->bottomLeft) &&
-        this->containsPoint(window->bottomRight);
+    return this->containsPoint(window->topLeft) && this->containsPoint(window->bottomRight);
 }
 
 CERenderWindow *CERenderWindow::clone() {
     CERenderWindow *r = new CERenderWindow(this->topLeft, this->bottomRight);
-    delete r->topLeft;
-    delete r->topRight;
-    delete r->bottomLeft;
-    delete r->bottomRight;
-
-    if(this->topLeft) {
-        r->topLeft = this->topLeft->clone();
-    } else {
-        r->topLeft = nullptr;
-    }
-    if(this->topRight) {
-        r->topRight = this->topRight->clone();
-    } else {
-        r->topRight = nullptr;
-    }
-    if(this->bottomLeft) {
-        r->bottomLeft = this->bottomLeft->clone();
-    } else {
-        r->bottomLeft = nullptr;
-    }
-    if(this->bottomRight) {
-        r->bottomRight = this->bottomRight->clone();
-    } else {
-        r->bottomRight = nullptr;
-    }
     r->setMaxX(this->maxX);
     r->setMaxY(this->maxY);
-    
     return r;
 }
 
@@ -282,60 +159,21 @@ void CERenderWindow::expand(unsigned int size)
     }
     this->topLeft->x -= this->topLeft->x >= size ? size : 0;
     this->topLeft->y -= this->topLeft->y >= size ? size : 0;
-    this->topRight->x += this->topRight->x < (this->maxX - size) ? size : 0;
-    this->topRight->y -= this->topRight->y >= size ? size : 0;
-    this->bottomLeft->x -= this->bottomLeft->x >= size ? size : 0;
-    this->bottomLeft->y += this->bottomLeft->y < (this->maxY - size) ? size : 0;
     this->bottomRight->x += this->bottomRight->x < (this->maxX - size) ? size : 0;
     this->bottomRight->y += this->bottomRight->y < (this->maxY - size) ? size : 0;
 }
 
-std::vector<CEPoint *> *CERenderWindow::getAllPoints()
-{
-    std::vector<CEPoint *> *points = new std::vector<CEPoint *>();
-    points->push_back(this->topLeft->clone());
-    points->push_back(this->topRight->clone());
-    points->push_back(this->bottomLeft->clone());
-    points->push_back(this->bottomRight->clone());
-    return points;
-}
-
 size_t CERenderWindow::getHeight()
 {
-    std::vector<CEPoint *> *points = this->getAllPoints();
-    int min = points->at(0)->y;
-    int max = points->at(0)->y;
-    for (size_t i = 0; i < points->size(); i++)
-    {
-        if (points->at(i)->y < min)
-        {
-            min = points->at(i)->y;
-        }
-        if (points->at(i)->y > max)
-        {
-            max = points->at(i)->y;
-        }
-    }
-    delete_pointers_vector<CEPoint>(points);
-    return (size_t)(max - min);
+    return this->topLeft->y - this->bottomRight->y;
 }
 
 size_t CERenderWindow::getWidth()
 {
-    std::vector<CEPoint *> *points = this->getAllPoints();
-    int min = points->at(0)->x;
-    int max = points->at(0)->x;
-    for (size_t i = 0; i < points->size(); i++)
-    {
-        if (points->at(i)->x < min)
-        {
-            min = points->at(i)->x;
-        }
-        if (points->at(i)->x > max)
-        {
-            max = points->at(i)->x;
-        }
-    }
-    delete_pointers_vector<CEPoint>(points);
-    return (size_t)(max - min);
+    return this->bottomRight->x - this->topLeft->x;
+}
+
+size_t CERenderWindow::getArea()
+{
+    return this->getHeight() * this->getWidth();
 }

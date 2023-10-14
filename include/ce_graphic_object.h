@@ -18,7 +18,6 @@ public:
     virtual void renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow) = 0;
     virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
     virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand = 0);
-    virtual std::vector<CEPoint *> *getAllRenderWindowPoints();
     // Setters
     virtual void setVisible(bool visible);
     virtual void setMirrored(bool mirrored);
