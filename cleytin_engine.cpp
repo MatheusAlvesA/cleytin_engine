@@ -62,7 +62,7 @@ bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory)
         return false;
     }
 
-    this->alteredWindows.push_back(this->objects[index]->getContainingWindow());
+    this->alteredWindows.push_back(this->objects[index]->getRenderWindow());
 
     this->objects[index]->beforeRemove(this);
     if (freeMemory)
@@ -145,7 +145,6 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
     }
 
     CERenderWindow *objWindow = object->getRenderWindow();
-    objWindow->rotate(object->getRotation());
     for (size_t i = 0; i < this->objects.size(); i++)
     {
         if (i == index || !this->objects[i]->getColisionEnabled())
@@ -153,14 +152,7 @@ std::vector<size_t> *CleytinEngine::getCollisionsOn(size_t index)
             continue;
         }
         CERenderWindow *candidateWindow = this->objects[i]->getRenderWindow();
-        candidateWindow->rotate(this->objects[i]->getRotation());
-        bool overlap = false;
-        if(this->objects[i]->getRotation() != 0 || object->getRotation() != 0) {
-            overlap = objWindow->doOverlapRotated(candidateWindow);
-        } else {
-            overlap = objWindow->doOverlapNotRotated(candidateWindow);
-        }
-        if (overlap)
+        if (objWindow->doOverlap(candidateWindow))
         {
             r->push_back(i);
         }
@@ -195,8 +187,8 @@ std::vector<CEGraphicObject *> *CleytinEngine::getObjectsOnWindow(CERenderWindow
     std::vector<CEGraphicObject *> *r = new std::vector<CEGraphicObject *>();
     for(size_t i = 0; i < this->objects.size(); i++) {
         CEGraphicObject *obj = this->objects[i];
-        CERenderWindow *objWindow = obj->getContainingWindow();
-        if(window->doOverlapNotRotated(objWindow)) {
+        CERenderWindow *objWindow = obj->getRenderWindow();
+        if(window->doOverlap(objWindow)) {
             r->push_back(obj);
         }
         delete objWindow;

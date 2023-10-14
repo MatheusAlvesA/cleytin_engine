@@ -86,7 +86,6 @@ void CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window, 
 {
     if(
         this->getSizeMultiplier() == 1 &&
-        this->getRotation() == 0 &&
         !this->getMirrored() &&
         !this->getNegative() &&
         !this->hasTransparency

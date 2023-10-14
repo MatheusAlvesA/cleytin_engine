@@ -39,7 +39,6 @@ public:
     void setAlignX(CEAlign align);
     void setAlignY(CEAlign align);
 
-    void setRotation(uint16_t rotation);
     void setMirrored(bool mirrored);
     void setNegative(bool negative);
 

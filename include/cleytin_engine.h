@@ -32,7 +32,6 @@ public:
     bool operator==(const CEPoint &dot);
     bool operator!=(const CEPoint &dot);
 
-    void rotate(CEPoint *rotationCenter, uint16_t degrees);
     CEPoint *clone();
     unsigned int distanceTo(const CEPoint point);
 };
@@ -79,14 +78,12 @@ public:
     void expand(unsigned int size);
     CERenderWindow *clone();
 
-    void rotate(uint16_t degrees);
     void resetToStartPosition();
 
     bool isZeroSize();
 
     CEWindowIntersectionSide getContainingSide(CERenderWindow *window);
-    bool doOverlapRotated(CERenderWindow *window);
-    bool doOverlapNotRotated(CERenderWindow *window);
+    bool doOverlap(CERenderWindow *window);
 
     bool operator==(const CERenderWindow &window);
     bool operator!=(const CERenderWindow &window);

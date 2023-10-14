@@ -44,7 +44,7 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         bool contained = false;
         for (size_t j = 0; j < list->size(); j++)
         {
-            if(j == i || !list->at(j)->doOverlapNotRotated(candidate)) continue;
+            if(j == i || !list->at(j)->doOverlap(candidate)) continue;
             if(in_array<size_t>(j, processedIndexes)) continue;
             if(
                 *list->at(j) == *candidate ||
@@ -59,7 +59,7 @@ std::vector<CERenderWindow *> *remove_sub_container_windows(std::vector<CERender
         // Testando se alguma janela já adicionada contém a janela candidata
         for (size_t j = 0; j < r->size(); j++)
         {
-            if(!list->at(j)->doOverlapNotRotated(candidate)) {
+            if(!list->at(j)->doOverlap(candidate)) {
                 continue;
             }
             if(
@@ -154,7 +154,7 @@ CERenderWindow *fuse_container_from_right(CERenderWindow *container, CERenderWin
 }
 
 CERenderWindow *fuse_container(CERenderWindow *container, CERenderWindow *candidate) {
-    if(!container->doOverlapNotRotated(candidate)) {
+    if(!container->doOverlap(candidate)) {
         return NULL;
     }
     CERenderWindow *fused = NULL;
@@ -248,7 +248,7 @@ std::vector<CERenderWindow *> *remove_intersections(std::vector<CERenderWindow *
         {
             if(
                 j == i ||
-                !list->at(j)->doOverlapNotRotated(candidate) ||
+                !list->at(j)->doOverlap(candidate) ||
                 in_array<size_t>(j, invalidIndexes)
             ) continue;
 

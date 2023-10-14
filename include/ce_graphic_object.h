@@ -5,6 +5,7 @@
 #include "ce_canvas.h"
 #include <vector>
 #include <stddef.h>
+#include <functional>
 
 class CEGraphicObject
 {
@@ -29,7 +30,6 @@ public:
     virtual void setMaxX(unsigned int x);
     virtual void setMaxY(unsigned int y);
     virtual void setPos(int x, int y);
-    virtual void setRotation(uint16_t rotation);
     virtual void setBaseColor(const CEColor color);
     // Getters
     virtual bool getVisible();
@@ -42,10 +42,8 @@ public:
     virtual unsigned int getMaxX();
     virtual unsigned int getMaxY();
     virtual CEColor getBaseColor();
-    virtual uint16_t getRotation();
     virtual size_t getRenderWindowHeight();
     virtual size_t getRenderWindowWidth();
-    virtual CERenderWindow *getContainingWindow();
     virtual std::vector<CERenderWindow *> *getAlteredWindows();
     virtual void clearAlteredWindows();
 
@@ -65,13 +63,11 @@ protected:
     int posY;
     unsigned int maxX;
     unsigned int maxY;
-    uint16_t rotation;
     CEColor baseColor;
     std::vector<CERenderWindow *> *alteredWindows;
 
     bool setPixel(CECanvas *canvas, int x, int y, CEColor color);
     bool setPixel(CECanvas *canvas, int x, int y, uint16_t color);
-    bool rotatePixel(int &x, int &y, uint16_t rot);
     void mirrorPixel(int &x);
     virtual void addCurrentWindowAsAltered();
     bool addAlteredWindow(CERenderWindow *w);

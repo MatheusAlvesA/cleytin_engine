@@ -40,16 +40,6 @@ bool CECircle::getFilled()
     return this->filled;
 }
 
-void CECircle::setRotation(uint16_t rotation)
-{
-    this->rotation = 0; // Circulo não recebe rotação
-}
-
-uint16_t CECircle::getRotation()
-{
-    return 0;
-}
-
 void CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window, CERenderWindow *subWindow)
 {
     int startX = window->topLeft->x > subWindow->topLeft->x ? window->topLeft->x : subWindow->topLeft->x;

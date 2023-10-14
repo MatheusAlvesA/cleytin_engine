@@ -61,8 +61,7 @@ bool CERenderWindow::isZeroSize() {
 }
 
 /**
- * @brief Assumindo que ambas as janelas não foram rotacionadas, esse método retorna o lado
- * da janela passada que tem uma parte contida dentro da janela atual.
+ * @brief Esse método retorna o lado da janela passada que tem uma parte contida dentro da janela atual.
  * 
  * @param window
  * @return CEWindowIntersectionSide
@@ -83,7 +82,7 @@ CEWindowIntersectionSide CERenderWindow::getContainingSide(CERenderWindow *windo
     return CEWindowIntersectionSide::NONE;
 }
 
-bool CERenderWindow::doOverlapNotRotated(CERenderWindow *window)
+bool CERenderWindow::doOverlap(CERenderWindow *window)
 {
     // Se um está à direita do outro
     if (
@@ -98,58 +97,6 @@ bool CERenderWindow::doOverlapNotRotated(CERenderWindow *window)
         this->bottomRight->y < window->topLeft->y ||
         window->bottomRight->y < this->topLeft->y
     ) {
-        return false;
-    }
- 
-    return true;
-}
-
-bool CERenderWindow::doOverlapRotated(CERenderWindow *window)
-{
-    int r1 = 0;
-    int l1 = 0;
-    int r2 = 0;
-    int l2 = 0;
-    int t1 = 0;
-    int b1 = 0;
-    int t2 = 0;
-    int b2 = 0;
-
-    std::vector<CEPoint *> *myPoints = this->getAllPoints();
-    r1 = myPoints->at(0)->x;
-    l1 = myPoints->at(0)->x;
-    t1 = myPoints->at(0)->y;
-    b1 = myPoints->at(0)->y;
-    for (size_t i = 0; i < myPoints->size(); i++)
-    {
-        if(myPoints->at(i)->x > r1) r1 = myPoints->at(i)->x;
-        if(myPoints->at(i)->x < l1) l1 = myPoints->at(i)->x;
-        if(myPoints->at(i)->y > b1) b1 = myPoints->at(i)->y;
-        if(myPoints->at(i)->y < t1) t1 = myPoints->at(i)->y;
-    }
-    delete_pointers_vector<CEPoint>(myPoints);
-
-    std::vector<CEPoint *> *otherPoints = window->getAllPoints();
-    r2 = otherPoints->at(0)->x;
-    l2 = otherPoints->at(0)->x;
-    t2 = otherPoints->at(0)->y;
-    b2 = otherPoints->at(0)->y;
-    for (size_t i = 0; i < otherPoints->size(); i++)
-    {
-        if(otherPoints->at(i)->x > r2) r2 = otherPoints->at(i)->x;
-        if(otherPoints->at(i)->x < l2) l2 = otherPoints->at(i)->x;
-        if(otherPoints->at(i)->y > b2) b2 = otherPoints->at(i)->y;
-        if(otherPoints->at(i)->y < t2) t2 = otherPoints->at(i)->y;
-    }
-    delete_pointers_vector<CEPoint>(otherPoints);
-    
-
-    // Se um está à direita do outro
-    if (l1 > r2 || l2 > r1) {
-        return false;
-    }
-    // Se um está acima do outro
-    if (b1 < t2 || b2 < t1) {
         return false;
     }
  
@@ -236,22 +183,6 @@ CELine *CERenderWindow::getRightLine()
     delete start;
     delete end;
     return r;
-}
-
-void CERenderWindow::rotate(uint16_t degrees)
-{
-    if (degrees == 0)
-    {
-        return;
-    }
-
-    CEPoint *center = this->getCenterPoint();
-
-    this->topLeft->rotate(center, degrees);
-    this->topRight->rotate(center, degrees);
-    this->bottomLeft->rotate(center, degrees);
-    this->bottomRight->rotate(center, degrees);
-    delete center;
 }
 
 void CERenderWindow::resetToStartPosition()

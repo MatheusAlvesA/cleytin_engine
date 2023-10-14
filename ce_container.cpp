@@ -18,11 +18,6 @@ CEContainer::~CEContainer() {
     delete this->objects;
 }
 
-// TODO Adicionar suporte para os métodos setRotation, setMirrored e setNegative
-void CEContainer::setRotation(uint16_t rotation) {
-   this->rotation = 0;
-}
-
 void CEContainer::setMirrored(bool mirrored) {
     this->mirrored = false;
 }

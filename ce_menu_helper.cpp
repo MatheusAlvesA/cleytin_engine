@@ -89,10 +89,6 @@ void CEMenuHelper::clearOptions() {
     this->addCurrentWindowAsAltered();
 }
 
-void CEMenuHelper::setRotation(uint16_t rotation) {
-   this->rotation = 0; // Sem suporte a rotação
-}
-
 void CEMenuHelper::setMirrored(bool mirrored) {
     this->mirrored = false; // Sem suporte a espelhamento
 }

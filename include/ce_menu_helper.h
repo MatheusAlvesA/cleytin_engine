@@ -26,7 +26,6 @@ public:
     unsigned int getHeight();
     uint getSelected();
 
-    void setRotation(uint16_t rotation);
     void setMirrored(bool mirrored);
     void setNegative(bool negative);
   
