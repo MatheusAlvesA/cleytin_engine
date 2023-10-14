@@ -24,6 +24,7 @@ idf_component_register(SRCS
                             "animations/ce_color_bitmap_sprite_animation.cpp"
                             "animations/ce_multi_linear_move_animation.cpp"
                             "animations/ce_text_reveal_animation.cpp"
+                            "animations/ce_pixel_shader_animation.cpp"
                             "ce_timer.cpp"
                     INCLUDE_DIRS "include" "include/animations"
                     REQUIRES cleytin_commons)
