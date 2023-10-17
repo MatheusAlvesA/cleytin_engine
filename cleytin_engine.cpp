@@ -204,7 +204,7 @@ std::vector<CEGraphicObject *> *CleytinEngine::getObjects() {
     return r;
 }
 
-bool CleytinEngine::renderToCanvas()
+bool IRAM_ATTR CleytinEngine::renderToCanvas()
 {
     std::vector<CERenderWindow *> *alteredWindows = new std::vector<CERenderWindow *>();
     for (size_t i = 0; i < this->objects.size(); i++)
@@ -275,7 +275,7 @@ uint64_t CleytinEngine::loopAndRender() {
     return esp_timer_get_time() - start;
 }
 
-uint64_t CleytinEngine::render()
+uint64_t IRAM_ATTR CleytinEngine::render()
 {
     uint64_t start = esp_timer_get_time();
     for (size_t i = 0; i < this->objects.size(); i++)
